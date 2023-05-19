@@ -1,0 +1,70 @@
+@import url("https://fonts.googleapis.com/css2?family=Alegreya+Sans+SC&family=Roboto&display=swap");
+@import "./variables.scss";
+@import "./reset.scss";
+
+body {
+  margin: 0;
+  font-family: $body-font;
+  font-size: 16px;
+  color: $text-color;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+#root {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+// h1 {
+//   color: $title-color;
+//   font-size: 28px;
+//   padding: 0;
+//   margin: 26px 0 0px 56px;
+
+//   @include breakpoint-small {
+//     font-size: 25px;
+//   }
+
+//   @include breakpoint-large {
+//     font-size: 31px;
+//   }
+// }
+
+// h2 {
+//   font-size: 23px;
+
+//   @include breakpoint-small {
+//     font-size: 21px;
+//   }
+
+//   @include breakpoint-large {
+//     font-size: 25px;
+//   }
+// }
+
+// main.page {
+//   flex: 1;
+
+//   .container {
+//     margin: 20px 35px;
+//   }
+
+//   .full-width {
+//     margin-left: -2rem;
+//     margin-right: -2rem;
+//   }
+
+//   p {
+//     color: $text-color;
+//     font-size: 16px;
+//     line-height: 1.5rem;
+//   }
+// }

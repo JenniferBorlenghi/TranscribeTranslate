@@ -1,0 +1,28 @@
+@import "./../../styles/variables.scss";
+
+header {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "arial";
+  height: 20%;
+  background-color: $primary-color;
+  color: $white-color;
+
+  .sound-icon {
+    font-size: 35px;
+    margin-right: -15px;
+    position: relative;
+    top: 4px;
+  }
+
+  .font-icon {
+    font-size: 50px;
+    margin-right: 12px;
+  }
+
+  .app-name {
+    font-size: 32px;
+  }
+}
