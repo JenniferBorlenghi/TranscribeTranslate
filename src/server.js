@@ -50,10 +50,23 @@ app.get("/api/audio", (req, res) => {
   // });
 });
 
+app.get("/api/transcript", (req, res) => {
+  console.log("transcript");
+
+  const source = req.query.source;
+  console.log("source", source);
+
+  const cmd = spawn(
+    "python3",
+    [path.join(process.cwd(), "/src/scripts/transcribe.py"), source || ""],
+    {
+      cwd: process.cwd(),
+    }
+  );
+
+  handleChildProcessOutput(cmd, res);
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
-
-// app.get("/api/transcript", (req, res) => {
-//   console.log("transcript");
-// });
