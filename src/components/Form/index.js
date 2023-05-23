@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import "./styles.scss";
+import { extractVideoIdFromLink, processSource } from "./../../apis/api-client";
 
 export default function Form() {
   const [sourceType, setSourceType] = useState("");
@@ -6,11 +8,13 @@ export default function Form() {
   const [isYoutubeSource, setIsYoutubeSource] = useState(false);
   const [source, setSource] = useState("");
   const [resultType, setResultType] = useState("");
-  const [resultLanguage, setResultLanguage] = useState("");
+  const [resultLanguage, setResultLanguage] = useState("no translation");
   const [email, setEmail] = useState("");
   const [errorMessages, setErrorMessages] = useState([]);
 
-  const handleFormSubmit = (e) => {
+  const inputFile = useRef();
+
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
 
     console.log(
@@ -28,16 +32,19 @@ export default function Form() {
 
     const arrayOfErrorMessages = [];
 
+    // verifying if the fields are all filled out
     if (
       sourceType === "" ||
       source === "" ||
       resultType === "" ||
-      resultLanguage === "" ||
-      email === ""
+      resultLanguage === ""
+      // ||
+      // email === ""
     ) {
       arrayOfErrorMessages.push("All fields are required.");
     }
 
+    // verifying if the youtube link provided is valid
     if (sourceType === "youtube") {
       const youtubeLinkPattern =
         /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/;
@@ -46,12 +53,40 @@ export default function Form() {
       if (!isValidLink) {
         arrayOfErrorMessages.push("The link provided is not valid");
       }
+    }
 
-      setErrorMessages(arrayOfErrorMessages);
+    setErrorMessages(arrayOfErrorMessages);
 
-      if (arrayOfErrorMessages.length === 0) {
-        console.log("ready to work!");
+    if (arrayOfErrorMessages.length === 0) {
+      console.log("ready to work!");
+
+      if (sourceType === "youtube") {
+        // extract video id from the url
+        const videoId = extractVideoIdFromLink(source);
+
+        const videoTranscription = await processSource(
+          videoId,
+          resultType,
+          resultLanguage,
+          email,
+          (message) => {
+            console.log((prev) => prev + message);
+          }
+        );
+        if (videoTranscription) {
+          console.log(videoTranscription);
+        }
       }
+
+      // clear fields after sending them
+      setSourceType("");
+      setIsAudioSource("");
+      setIsYoutubeSource("");
+      setSource("");
+      setResultType("");
+      setResultLanguage("");
+      setEmail("");
+      //   inputFile.current.value = "";
     }
   };
 
@@ -108,28 +143,33 @@ export default function Form() {
 
         {/* Conditional Input File for audio source type */}
         {isAudioSource && (
-          <label>
-            Select an audio:
-            <input
-              type="file"
-              accept="audio/*"
-              onChange={(e) => setSource(e.target.files[0])}
-            />
-            {/*SEE WHY ADD REF HERE!!  */}
-          </label>
+          <div>
+            <label>
+              Select an audio:
+              <input
+                type="file"
+                accept="audio/*"
+                onChange={(e) => setSource(e.target.files[0])}
+                ref={inputFile}
+              />
+              {/*SEE WHY ADD REF HERE!!  */}
+            </label>
+          </div>
         )}
 
         {/* Conditional Input Text for YouTube URL source type */}
         {isYoutubeSource && (
-          <label>
-            YouTube URL
-            <input
-              type="text"
-              placeholder="Enter the YouTube URL"
-              value={source}
-              onChange={(e) => setSource(e.target.value)}
-            />
-          </label>
+          <div>
+            <label>
+              YouTube URL
+              <input
+                type="text"
+                placeholder="Enter the YouTube URL"
+                value={source}
+                onChange={(e) => setSource(e.target.value)}
+              />
+            </label>
+          </div>
         )}
 
         {/* Result type input radio */}
@@ -156,31 +196,35 @@ export default function Form() {
         </div>
 
         {/* Result language select input */}
-        <label>
-          To what language you would like to translate your source?
-          <select
-            value={resultLanguage}
-            onChange={(e) => setResultLanguage(e.target.value)}
-          >
-            <option value="notranslation">No translation</option>
-            <option value="english">English</option>
-            <option value="portuguese">Portuguese</option>
-            <option value="filipino">Filipino</option>
-            <option value="japanese">Japanese</option>
-          </select>
-        </label>
+        <div>
+          <label>
+            To what language you would like to translate your source?
+            <select
+              value={resultLanguage}
+              onChange={(e) => setResultLanguage(e.target.value)}
+            >
+              <option value="no translation">No translation</option>
+              <option value="english">English</option>
+              <option value="portuguese">Portuguese</option>
+              <option value="filipino">Filipino</option>
+              <option value="japanese">Japanese</option>
+            </select>
+          </label>
+        </div>
 
         {/* User email input */}
-        <label>
-          Let us know your email so we can let you know when your processing is
-          done
-          <input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </label>
+        <div>
+          <label>
+            Let us know your email so we can let you know when your processing
+            is done
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </label>
+        </div>
 
         <button>Start Processing</button>
       </form>
