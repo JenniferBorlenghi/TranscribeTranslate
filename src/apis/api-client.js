@@ -4,18 +4,23 @@ export function extractVideoIdFromLink(url) {
 }
 
 export async function processSource(
-  videoId,
+  source,
   resultType,
   resultLanguage,
   email,
   callback
 ) {
-  console.log("processing", videoId);
-  callback("Downloading audio...\n");
-  await downloadAudioFromVideo(videoId, callback);
+  console.log("processing", source);
+
+  if (typeof source === "string") {
+    callback("Downloading audio...\n");
+    await downloadAudioFromVideo(source, callback);
+  }
 
   // callback("\nTranscribing audio. It takes a while...\n");
-  // const transcription = await transcribe(videoId, resultType, callback);
+  // const transcription = await transcribe(source, resultType, callback);
+
+  // console.log("transcription", transcription);
 
   // // if it was possible to get the transcription of the audio"
   // if (transcription) {
@@ -50,13 +55,27 @@ export async function downloadAudioFromVideo(videoId, onProgress) {
       video_id: videoId,
     })}`
   );
-  console.log("search", res);
 
   // result from the api (the body)
   const reader = res.body?.getReader();
 
   if (reader) {
     return streamedResponse(reader, onProgress);
+  }
+}
+
+export async function transcribe(source, onProgress) {
+  const res = await fetch(
+    `/api/transcript?${new URLSearchParams({ source: source })}`,
+    {}
+  );
+
+  const reader = res.body?.getReader();
+
+  if (reader) {
+    return streamedResponse(reader, onProgress);
+  } else {
+    return false;
   }
 }
 
