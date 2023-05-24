@@ -24,23 +24,21 @@ export async function processSource(
 
   // // if it was possible to get the transcription of the audio"
   // if (transcription) {
-  //   console.log("transcription", transcription);
-
-  //   // // if translation is requested, then translate
-  //   // if (resultLanguage !== "no translation") {
-  //   //   callback("\nTranslating transcription...\n");
-  //   //   const translatedTranscription = await translate(
-  //   //     transcription,
-  //   //     resultLanguage,
-  //   //     callback
-  //   //   );
-  //   //   callback("\nDone!");
-  //   //   return translatedTranscription;
-  //   // } else {
-  //   //   // if no translation requested, return the transcription
-  //   //   callback("\nDone!");
-  //   //   return transcription;
-  //   // }
+  //   // if translation is requested, then translate
+  //   if (resultLanguage !== "no translation") {
+  //     callback("\nTranslating transcription...\n");
+  //     const translatedTranscription = await translate(
+  //       transcription,
+  //       resultLanguage,
+  //       callback
+  //     );
+  //     callback("\nDone!");
+  //     return translatedTranscription;
+  //   } else {
+  //     // if no translation requested, return the transcription
+  //     callback("\nDone!");
+  //     return transcription;
+  //   }
   // }
 
   // // if no transcription, return false
@@ -67,8 +65,8 @@ export async function downloadAudioFromVideo(videoId, onProgress) {
 export async function transcribe(source, resultType, onProgress) {
   const res = await fetch(
     `/api/transcript?${new URLSearchParams({
-      source: source,
-      responseFormat: resultType,
+      source,
+      resultType,
     })}`,
     {}
   );
@@ -77,6 +75,23 @@ export async function transcribe(source, resultType, onProgress) {
 
   if (reader) {
     console.log("reader", reader);
+    return streamedResponse(reader, onProgress);
+  } else {
+    return false;
+  }
+}
+
+export async function translate(transcription, resultLanguage, onProgress) {
+  const res = await fetch(`/api/translate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain; charset=utf-8",
+    },
+    body: transcription,
+  });
+  const reader = res.body?.getReader();
+
+  if (reader) {
     return streamedResponse(reader, onProgress);
   } else {
     return false;

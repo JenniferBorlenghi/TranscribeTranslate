@@ -187,8 +187,8 @@ export default function Form() {
           <label>
             <input
               type="radio"
-              value="subtitles"
-              checked={resultType === "subtitles"}
+              value="srt"
+              checked={resultType === "srt"}
               onChange={(e) => setResultType(e.target.value)}
             />
             Subtitles

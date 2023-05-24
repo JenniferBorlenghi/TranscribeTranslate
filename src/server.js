@@ -54,11 +54,17 @@ app.get("/api/transcript", (req, res) => {
   console.log("transcript");
 
   const source = req.query.source;
+  const resultType = req.query.resultType;
+
   console.log("source", source);
 
   const cmd = spawn(
     "python3",
-    [path.join(process.cwd(), "/src/scripts/transcribe.py"), source || ""],
+    [
+      path.join(process.cwd(), "/src/scripts/transcribe.py"),
+      source || "",
+      resultType || "",
+    ],
     {
       cwd: process.cwd(),
     }
