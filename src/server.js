@@ -7,6 +7,8 @@ const { handleChildProcessOutput } = require("./apis/childProcess");
 const app = express();
 const port = 3000;
 
+app.use(express.json());
+
 app.get("/api/audio", (req, res) => {
   console.log("audio");
 
@@ -70,6 +72,27 @@ app.get("/api/transcript", (req, res) => {
     }
   );
 
+  handleChildProcessOutput(cmd, res);
+});
+
+app.post("/api/translate", (req, res) => {
+  const { transcription, resultLanguage } = req.body;
+  console.log("transcript received in the api", transcription);
+  console.log("result type", resultLanguage);
+
+  const cmd = spawn(
+    "python3",
+    [
+      path.join(process.cwd(), "/src/scripts/translate.py"),
+      transcription || "",
+      resultLanguage || "",
+    ],
+    {
+      cwd: process.cwd(),
+    }
+  );
+  // cmd.stdin.write(transcription);
+  // cmd.stdin.end();
   handleChildProcessOutput(cmd, res);
 });
 

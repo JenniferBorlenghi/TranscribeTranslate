@@ -20,29 +20,31 @@ export async function processSource(
   callback("\nTranscribing audio. It takes a while...\n");
   const transcription = await transcribe(source, resultType, callback);
   console.log("audio transcripted!");
-  console.log("transcription", transcription);
 
-  // // if it was possible to get the transcription of the audio"
-  // if (transcription) {
-  //   // if translation is requested, then translate
-  //   if (resultLanguage !== "no translation") {
-  //     callback("\nTranslating transcription...\n");
-  //     const translatedTranscription = await translate(
-  //       transcription,
-  //       resultLanguage,
-  //       callback
-  //     );
-  //     callback("\nDone!");
-  //     return translatedTranscription;
-  //   } else {
-  //     // if no translation requested, return the transcription
-  //     callback("\nDone!");
-  //     return transcription;
-  //   }
-  // }
+  // if it was possible to get the transcription of the audio"
+  if (transcription) {
+    // if translation is requested, then translate
+    if (resultLanguage !== "no translation") {
+      callback("\nTranslating transcription...\n");
 
-  // // if no transcription, return false
-  // return false;
+      console.log("transcription for function translate", typeof transcription);
+
+      const translatedTranscription = await translate(
+        transcription,
+        resultLanguage,
+        callback
+      );
+      callback("\nDone!");
+      return translatedTranscription;
+    } else {
+      // if no translation requested, return the transcription
+      callback("\nDone!");
+      return transcription;
+    }
+  }
+
+  // if no transcription, return false
+  return false;
 }
 
 export async function downloadAudioFromVideo(videoId, onProgress) {
@@ -82,13 +84,18 @@ export async function transcribe(source, resultType, onProgress) {
 }
 
 export async function translate(transcription, resultLanguage, onProgress) {
+  console.log("transcription calling", transcription);
+
+  const data = { transcription, resultLanguage };
+
   const res = await fetch(`/api/translate`, {
     method: "POST",
     headers: {
-      "Content-Type": "text/plain; charset=utf-8",
+      "Content-Type": "application/json",
     },
-    body: transcription,
+    body: JSON.stringify(data),
   });
+
   const reader = res.body?.getReader();
 
   if (reader) {
@@ -112,8 +119,6 @@ async function streamedResponse(reader, onProgress) {
 
       const output = decoder.decode(value);
       result += output;
-
-      console.log("transcription result", result);
 
       onProgress(output);
 
