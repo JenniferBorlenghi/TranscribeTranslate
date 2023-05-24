@@ -16,10 +16,10 @@ export async function processSource(
     callback("Downloading audio...\n");
     await downloadAudioFromVideo(source, callback);
   }
-
+  console.log("audio downloaded!");
   callback("\nTranscribing audio. It takes a while...\n");
   const transcription = await transcribe(source, resultType, callback);
-
+  console.log("audio transcripted!");
   console.log("transcription", transcription);
 
   // // if it was possible to get the transcription of the audio"
@@ -64,9 +64,12 @@ export async function downloadAudioFromVideo(videoId, onProgress) {
   }
 }
 
-export async function transcribe(source, onProgress) {
+export async function transcribe(source, resultType, onProgress) {
   const res = await fetch(
-    `/api/transcript?${new URLSearchParams({ source: source })}`,
+    `/api/transcript?${new URLSearchParams({
+      source: source,
+      responseFormat: resultType,
+    })}`,
     {}
   );
 
@@ -82,9 +85,10 @@ export async function transcribe(source, onProgress) {
 
 async function streamedResponse(reader, onProgress) {
   return await new Promise((resolve) => {
-    console.log("on progress", onProgress);
+    console.log("on progress", reader);
     const decoder = new TextDecoder();
     let result = "";
+
     const readChunk = ({ done, value }) => {
       if (done) {
         resolve(result);
@@ -93,7 +97,11 @@ async function streamedResponse(reader, onProgress) {
 
       const output = decoder.decode(value);
       result += output;
+
+      console.log("transcription result", result);
+
       onProgress(output);
+
       reader.read().then(readChunk);
     };
 
