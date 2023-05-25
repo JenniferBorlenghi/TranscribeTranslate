@@ -1,13 +1,15 @@
 const express = require("express");
-const { spawn } = require("child_process");
+const { spawn, exec } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const { handleChildProcessOutput } = require("./apis/childProcess");
+const fileUpload = require("express-fileupload");
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());
+app.use(fileUpload());
 
 app.get("/api/audio", (req, res) => {
   console.log("audio");
@@ -52,33 +54,48 @@ app.get("/api/audio", (req, res) => {
   // });
 });
 
-app.get("/api/transcript", (req, res) => {
-  console.log("transcript");
+app.post("/api/upload", (req, res) => {
+  const audioFile = req.files.audio;
+  console.log("audioFile", audioFile.name);
 
+  const filePath = path.join(process.cwd(), `/tmp/${audioFile.name}`);
+
+  audioFile.mv(filePath, (err) => {
+    if (err) {
+      console.error("Error to save the file: ", err);
+      return res.status(500).send("Error to save the file");
+    }
+  });
+});
+
+app.get("/api/transcript", (req, res) => {
   const source = req.query.source;
   const resultType = req.query.resultType;
+  console.log("transcript", source);
 
-  console.log("source", source);
+  // const cmd = spawn(
+  //   "python3",
+  //   [
+  //     path.join(process.cwd(), "/src/scripts/transcribe.py"),
+  //     source || "",
+  //     resultType || "",
+  //   ],
+  //   {
+  //     cwd: process.cwd(),
+  //   }
+  // );
 
-  const cmd = spawn(
-    "python3",
-    [
-      path.join(process.cwd(), "/src/scripts/transcribe.py"),
-      source || "",
-      resultType || "",
-    ],
-    {
-      cwd: process.cwd(),
-    }
-  );
+  // handleChildProcessOutput(cmd, res);
+});
 
-  handleChildProcessOutput(cmd, res);
+app.get("/api/test", (req, res) => {
+  const source = req.query.source;
+
+  console.log("source here server", source);
 });
 
 app.post("/api/translate", (req, res) => {
   const { transcription, resultLanguage } = req.body;
-  console.log("transcript received in the api", transcription);
-  console.log("result type", resultLanguage);
 
   const cmd = spawn(
     "python3",
@@ -91,8 +108,7 @@ app.post("/api/translate", (req, res) => {
       cwd: process.cwd(),
     }
   );
-  // cmd.stdin.write(transcription);
-  // cmd.stdin.end();
+
   handleChildProcessOutput(cmd, res);
 });
 

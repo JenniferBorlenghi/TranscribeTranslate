@@ -10,45 +10,43 @@ export async function processSource(
   email,
   callback
 ) {
-  console.log("processing", source);
-
   if (typeof source === "string") {
     callback("Downloading audio...\n");
     await downloadAudioFromVideo(source, callback);
+  } else {
+    console.log("audio HERE!!", source);
+    await uploadAudio(source, callback);
   }
-  console.log("audio downloaded!");
+
   callback("\nTranscribing audio. It takes a while...\n");
   const transcription = await transcribe(source, resultType, callback);
-  console.log("audio transcripted!");
+  console.log("transcription", transcription);
 
-  // if it was possible to get the transcription of the audio"
-  if (transcription) {
-    // if translation is requested, then translate
-    if (resultLanguage !== "no translation") {
-      callback("\nTranslating transcription...\n");
+  // // if it was possible to get the transcription of the audio"
+  // if (transcription) {
+  //   // if translation is requested, then translate
+  //   if (resultLanguage !== "no translation") {
+  //     callback("\nTranslating transcription...\n");
 
-      console.log("transcription for function translate", typeof transcription);
+  //     const translatedTranscription = await translate(
+  //       transcription,
+  //       resultLanguage,
+  //       callback
+  //     );
+  //     callback("\nDone!");
+  //     return translatedTranscription;
+  //   } else {
+  //     // if no translation requested, return the transcription
+  //     callback("\nDone!");
+  //     return transcription;
+  //   }
+  // }
 
-      const translatedTranscription = await translate(
-        transcription,
-        resultLanguage,
-        callback
-      );
-      callback("\nDone!");
-      return translatedTranscription;
-    } else {
-      // if no translation requested, return the transcription
-      callback("\nDone!");
-      return transcription;
-    }
-  }
-
-  // if no transcription, return false
-  return false;
+  // // if no transcription, return false
+  // return false;
 }
 
 export async function downloadAudioFromVideo(videoId, onProgress) {
-  console.log("download started");
   // calling the API (backend) to get the audio
   const res = await fetch(
     `http://localhost:3000/api/audio?${new URLSearchParams({
@@ -64,28 +62,52 @@ export async function downloadAudioFromVideo(videoId, onProgress) {
   }
 }
 
-export async function transcribe(source, resultType, onProgress) {
-  const res = await fetch(
-    `/api/transcript?${new URLSearchParams({
-      source,
-      resultType,
-    })}`,
-    {}
-  );
+export async function uploadAudio(source, onProgress) {
+  const res = await fetch("/api/upload", {
+    method: "POST",
+    body: source,
+  });
 
   const reader = res.body?.getReader();
 
   if (reader) {
-    console.log("reader", reader);
     return streamedResponse(reader, onProgress);
   } else {
     return false;
   }
 }
 
-export async function translate(transcription, resultLanguage, onProgress) {
-  console.log("transcription calling", transcription);
+export async function transcribe(source, resultType, onProgress) {
+  console.log("source", typeof source);
 
+  // const res = await fetch(
+  //   `/api/transcript?${new URLSearchParams({
+  //     source,
+  //     resultType,
+  //   })}`,
+  //   {}
+  // );
+
+  const res = await fetch(
+    `/api/test?${new URLSearchParams({
+      source,
+      resultType,
+    })}`,
+    {}
+  );
+
+  console.log("res", res);
+
+  // const reader = res.body?.getReader();
+
+  // if (reader) {
+  //   return streamedResponse(reader, onProgress);
+  // } else {
+  //   return false;
+  // }
+}
+
+export async function translate(transcription, resultLanguage, onProgress) {
   const data = { transcription, resultLanguage };
 
   const res = await fetch(`/api/translate`, {

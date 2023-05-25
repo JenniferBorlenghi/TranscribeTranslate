@@ -76,6 +76,22 @@ export default function Form() {
         if (videoTranscription) {
           console.log(videoTranscription);
         }
+      } else {
+        const formData = new FormData();
+        formData.append("audio", source);
+
+        const audioTranscription = await processSource(
+          formData,
+          resultType,
+          resultLanguage,
+          email,
+          (message) => {
+            console.log((prev) => prev + message);
+          }
+        );
+        if (audioTranscription) {
+          console.log(audioTranscription);
+        }
       }
 
       // clear fields after sending them
@@ -86,6 +102,7 @@ export default function Form() {
       setResultType("");
       setResultLanguage("");
       setEmail("");
+      // DEAL WITH THAT LATER ON
       //   inputFile.current.value = "";
     }
   };
@@ -101,6 +118,11 @@ export default function Form() {
       setIsAudioSource(false);
       setIsYoutubeSource(true);
     }
+  };
+
+  const handleAudioSourceChange = (e) => {
+    const file = e.target.files[0];
+    setSource(file);
   };
 
   return (
@@ -149,7 +171,8 @@ export default function Form() {
               <input
                 type="file"
                 accept="audio/*"
-                onChange={(e) => setSource(e.target.files[0])}
+                // onChange={(e) => setSource(e.target.files[0])}
+                onChange={(e) => handleAudioSourceChange(e)}
                 ref={inputFile}
               />
               {/*SEE WHY ADD REF HERE!!  */}
@@ -208,6 +231,7 @@ export default function Form() {
               <option value="portuguese">Portuguese</option>
               <option value="filipino">Filipino</option>
               <option value="japanese">Japanese</option>
+              <option value="spanish">Spanish</option>
             </select>
           </label>
         </div>

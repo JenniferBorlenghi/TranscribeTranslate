@@ -6,9 +6,8 @@ import pysrt
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # get the data, then strip (remove any character that is not text)
-# the split each sentence, using the final dot as a reference
-# input_data = sys.stdin.read().strip().split('')
-# input_data = sys.stdin.read().strip()
+# the split each sentence, using the final dot as a reference, so 
+# big amounts of text can be processed
 input_data = sys.argv[1].strip()
 array_of_sentences = input_data.split('.')
 
@@ -37,13 +36,6 @@ def translate_text(text):
         translated = translated[:-1]
     return translated
 
-# loop through the array of sentences, because the translation happens 
-# step by step, if you send it all at once, it goes out of the maximun tokens
-# even if we adjust to the maximun that the open ai completion create function
-# can handle. So the best divisor is the final dot, and that is what we use
-# but when spliting by dot, the last dot will create a sentence like this '.'
-# so we remove when looping through it, to translate and show to the user
-# then if there is a sentence we 
 for sentence in array_of_sentences:
     # check if the sentence is not empty
     # if not, it translates it
