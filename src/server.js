@@ -55,6 +55,11 @@ app.get("/api/audio", (req, res) => {
 });
 
 app.post("/api/upload", (req, res) => {
+  // Check if files were uploaded
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send("No files were uploaded.");
+  }
+
   const audioFile = req.files.audio;
   console.log("audioFile", audioFile.name);
 
@@ -65,6 +70,7 @@ app.post("/api/upload", (req, res) => {
       console.error("Error to save the file: ", err);
       return res.status(500).send("Error to save the file");
     }
+    res.send("File uploaded successfully.");
   });
 });
 
@@ -73,25 +79,19 @@ app.get("/api/transcript", (req, res) => {
   const resultType = req.query.resultType;
   console.log("transcript", source);
 
-  // const cmd = spawn(
-  //   "python3",
-  //   [
-  //     path.join(process.cwd(), "/src/scripts/transcribe.py"),
-  //     source || "",
-  //     resultType || "",
-  //   ],
-  //   {
-  //     cwd: process.cwd(),
-  //   }
-  // );
+  const cmd = spawn(
+    "python3",
+    [
+      path.join(process.cwd(), "/src/scripts/transcribe.py"),
+      source || "",
+      resultType || "",
+    ],
+    {
+      cwd: process.cwd(),
+    }
+  );
 
-  // handleChildProcessOutput(cmd, res);
-});
-
-app.get("/api/test", (req, res) => {
-  const source = req.query.source;
-
-  console.log("source here server", source);
+  handleChildProcessOutput(cmd, res);
 });
 
 app.post("/api/translate", (req, res) => {

@@ -13,14 +13,22 @@ export async function processSource(
   if (typeof source === "string") {
     callback("Downloading audio...\n");
     await downloadAudioFromVideo(source, callback);
-  } else {
-    console.log("audio HERE!!", source);
-    await uploadAudio(source, callback);
-  }
 
-  callback("\nTranscribing audio. It takes a while...\n");
-  const transcription = await transcribe(source, resultType, callback);
-  console.log("transcription", transcription);
+    callback("\nTranscribing audio from Youtube. It takes a while...\n");
+    const transcription = await transcribeAudioFromVideo(
+      source,
+      resultType,
+      callback
+    );
+    console.log("transcription youtube", transcription);
+  } else {
+    callback("Downloading audio...\n");
+    await uploadAudio(source, callback);
+    console.log("audio uploaded");
+
+    // const transcription = await transcribeAudioFromAudio(source, resultType, callback);
+    // console.log("trascription Audio", transcription);
+  }
 
   // // if it was possible to get the transcription of the audio"
   // if (transcription) {
@@ -69,6 +77,26 @@ export async function uploadAudio(source, onProgress) {
   });
 
   const reader = res.body?.getReader();
+  console.log("reader", reader);
+  if (reader) {
+    return streamedResponse(reader, onProgress);
+  } else {
+    return false;
+  }
+}
+
+export async function transcribeAudioFromVideo(source, resultType, onProgress) {
+  console.log("source", typeof source);
+
+  const res = await fetch(
+    `/api/transcript?${new URLSearchParams({
+      source,
+      resultType,
+    })}`,
+    {}
+  );
+
+  const reader = res.body?.getReader();
 
   if (reader) {
     return streamedResponse(reader, onProgress);
@@ -77,34 +105,19 @@ export async function uploadAudio(source, onProgress) {
   }
 }
 
-export async function transcribe(source, resultType, onProgress) {
-  console.log("source", typeof source);
+export async function transcribeAudioFromAudio(source, resultType, onProgress) {
+  const res = await fetch("/api/transcribe/audio", {
+    method: "POST",
+    body: source,
+  });
 
-  // const res = await fetch(
-  //   `/api/transcript?${new URLSearchParams({
-  //     source,
-  //     resultType,
-  //   })}`,
-  //   {}
-  // );
+  const reader = res.body?.getReader();
 
-  const res = await fetch(
-    `/api/test?${new URLSearchParams({
-      source,
-      resultType,
-    })}`,
-    {}
-  );
-
-  console.log("res", res);
-
-  // const reader = res.body?.getReader();
-
-  // if (reader) {
-  //   return streamedResponse(reader, onProgress);
-  // } else {
-  //   return false;
-  // }
+  if (reader) {
+    return streamedResponse(reader, onProgress);
+  } else {
+    return false;
+  }
 }
 
 export async function translate(transcription, resultLanguage, onProgress) {
