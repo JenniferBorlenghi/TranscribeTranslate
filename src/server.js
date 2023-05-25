@@ -74,10 +74,8 @@ app.post("/api/upload", (req, res) => {
   });
 });
 
-app.get("/api/transcript", (req, res) => {
-  const source = req.query.source;
-  const resultType = req.query.resultType;
-  console.log("transcript", source);
+app.get("/api/transcript/youtube", (req, res) => {
+  const { source, resultType } = req.query;
 
   const cmd = spawn(
     "python3",
@@ -85,6 +83,34 @@ app.get("/api/transcript", (req, res) => {
       path.join(process.cwd(), "/src/scripts/transcribe.py"),
       source || "",
       resultType || "",
+      "youtube",
+    ],
+    {
+      cwd: process.cwd(),
+    }
+  );
+
+  handleChildProcessOutput(cmd, res);
+});
+
+app.post("/api/transcript/audio", (req, res) => {
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send("No files were uploaded.");
+  }
+
+  const fileName = req.files.audio.name;
+  const resultType = req.body.resultType;
+
+  console.log("entering server transcript audio", fileName);
+  console.log("result type", resultType);
+
+  const cmd = spawn(
+    "python3",
+    [
+      path.join(process.cwd(), "/src/scripts/transcribe.py"),
+      fileName || "",
+      resultType || "",
+      "audio",
     ],
     {
       cwd: process.cwd(),

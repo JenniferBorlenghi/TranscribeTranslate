@@ -2,11 +2,14 @@ import os
 import openai
 import sys
 openai.api_key = os.getenv("OPENAI_API_KEY")
-video_id = sys.argv[1]
+source_name = sys.argv[1]
 result_type = sys.argv[2]
+audio_source = sys.argv[3]
 
-
-audio_file_path = os.path.join(os.getcwd(), 'tmp', video_id + '.m4a')
+if audio_source == "youtube": 
+    audio_file_path = os.path.join(os.getcwd(), 'tmp', source_name + '.m4a')
+elif audio_source == "audio":
+    audio_file_path = os.path.join(os.getcwd(), 'tmp', source_name)
 
 audio_file = open(audio_file_path, "rb")
 transcript = openai.Audio.transcribe(

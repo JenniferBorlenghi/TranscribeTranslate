@@ -26,8 +26,12 @@ export async function processSource(
     await uploadAudio(source, callback);
     console.log("audio uploaded");
 
-    // const transcription = await transcribeAudioFromAudio(source, resultType, callback);
-    // console.log("trascription Audio", transcription);
+    const transcription = await transcribeAudioFromAudio(
+      source,
+      resultType,
+      callback
+    );
+    console.log("trascription Audio", transcription);
   }
 
   // // if it was possible to get the transcription of the audio"
@@ -77,7 +81,7 @@ export async function uploadAudio(source, onProgress) {
   });
 
   const reader = res.body?.getReader();
-  console.log("reader", reader);
+
   if (reader) {
     return streamedResponse(reader, onProgress);
   } else {
@@ -89,7 +93,7 @@ export async function transcribeAudioFromVideo(source, resultType, onProgress) {
   console.log("source", typeof source);
 
   const res = await fetch(
-    `/api/transcript?${new URLSearchParams({
+    `/api/transcript/youtube?${new URLSearchParams({
       source,
       resultType,
     })}`,
@@ -106,7 +110,9 @@ export async function transcribeAudioFromVideo(source, resultType, onProgress) {
 }
 
 export async function transcribeAudioFromAudio(source, resultType, onProgress) {
-  const res = await fetch("/api/transcribe/audio", {
+  source.append("resultType", resultType);
+
+  const res = await fetch("/api/transcript/audio", {
     method: "POST",
     body: source,
   });
