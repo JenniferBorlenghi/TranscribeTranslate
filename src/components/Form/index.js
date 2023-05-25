@@ -11,6 +11,8 @@ export default function Form() {
   const [resultLanguage, setResultLanguage] = useState("no translation");
   const [email, setEmail] = useState("");
   const [errorMessages, setErrorMessages] = useState([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [output, setOutput] = useState("");
 
   const inputFile = useRef();
 
@@ -59,6 +61,7 @@ export default function Form() {
 
     if (arrayOfErrorMessages.length === 0) {
       console.log("ready to work!");
+      setIsProcessing(true);
 
       if (sourceType === "youtube") {
         // extract video id from the url
@@ -75,7 +78,10 @@ export default function Form() {
         );
         if (videoTranscription) {
           console.log(videoTranscription);
+          setOutput(videoTranscription);
         }
+
+        setIsProcessing(false);
       } else {
         const formData = new FormData();
         formData.append("audio", source);
@@ -91,7 +97,9 @@ export default function Form() {
         );
         if (audioTranscription) {
           console.log(audioTranscription);
+          setOutput(audioTranscription);
         }
+        setIsProcessing(false);
       }
 
       // clear fields after sending them
@@ -252,6 +260,8 @@ export default function Form() {
 
         <button>Start Processing</button>
       </form>
+
+      {output !== "" && <div>{output}</div>}
     </div>
   );
 }
