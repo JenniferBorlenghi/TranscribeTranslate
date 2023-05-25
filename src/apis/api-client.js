@@ -10,12 +10,14 @@ export async function processSource(
   email,
   callback
 ) {
+  let transcription = "";
+
   if (typeof source === "string") {
     callback("Downloading audio...\n");
     await downloadAudioFromVideo(source, callback);
 
     callback("\nTranscribing audio from Youtube. It takes a while...\n");
-    const transcription = await transcribeAudioFromVideo(
+    transcription = await transcribeAudioFromVideo(
       source,
       resultType,
       callback
@@ -26,7 +28,7 @@ export async function processSource(
     await uploadAudio(source, callback);
     console.log("audio uploaded");
 
-    const transcription = await transcribeAudioFromAudio(
+    transcription = await transcribeAudioFromAudio(
       source,
       resultType,
       callback
@@ -34,28 +36,28 @@ export async function processSource(
     console.log("trascription Audio", transcription);
   }
 
-  // // if it was possible to get the transcription of the audio"
-  // if (transcription) {
-  //   // if translation is requested, then translate
-  //   if (resultLanguage !== "no translation") {
-  //     callback("\nTranslating transcription...\n");
+  // if it was possible to get the transcription of the audio"
+  if (transcription) {
+    // if translation is requested, then translate
+    if (resultLanguage !== "no translation") {
+      callback("\nTranslating transcription...\n");
 
-  //     const translatedTranscription = await translate(
-  //       transcription,
-  //       resultLanguage,
-  //       callback
-  //     );
-  //     callback("\nDone!");
-  //     return translatedTranscription;
-  //   } else {
-  //     // if no translation requested, return the transcription
-  //     callback("\nDone!");
-  //     return transcription;
-  //   }
-  // }
+      const translatedTranscription = await translate(
+        transcription,
+        resultLanguage,
+        callback
+      );
+      callback("\nDone!");
+      return translatedTranscription;
+    } else {
+      // if no translation requested, return the transcription
+      callback("\nDone!");
+      return transcription;
+    }
+  }
 
-  // // if no transcription, return false
-  // return false;
+  // if no transcription, return false
+  return false;
 }
 
 export async function downloadAudioFromVideo(videoId, onProgress) {
