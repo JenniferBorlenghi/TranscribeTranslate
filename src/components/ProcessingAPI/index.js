@@ -1,7 +1,7 @@
 import { ClipLoader } from "react-spinners";
 import "./styles.scss";
 
-function ProcessingSpinner() {
+export default function ProcessingSpinner() {
   return (
     <div className="processing-ai">
       <p>Processing...</p>
@@ -11,5 +11,3 @@ function ProcessingSpinner() {
     </div>
   );
 }
-
-export default ProcessingSpinner;
