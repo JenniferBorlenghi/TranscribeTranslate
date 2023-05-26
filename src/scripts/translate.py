@@ -19,28 +19,30 @@ prompt_base = (
     "Translate from [START] to [END]:\n[START]\n"
 )
 
-def translate_text(text):
-    prompt = prompt_base
-    prompt += text + "\n[END]"
+# def translate_text(text):
+#     prompt = prompt_base
+#     prompt += text + "\n[END]"
 
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=prompt,
-        max_tokens=3000, 
-        temperature=0,
-    )
-    translated = response.choices[0].text.strip()
-    if translated.startswith('「'):
-        translated = translated[1:]
-    if translated.endswith('」'):
-        translated = translated[:-1]
-    return translated
+#     response = openai.Completion.create(
+#         model="text-davinci-003",
+#         prompt=prompt,
+#         max_tokens=3000, 
+#         temperature=0,
+#     )
+#     translated = response.choices[0].text.strip()
+#     if translated.startswith('「'):
+#         translated = translated[1:]
+#     if translated.endswith('」'):
+#         translated = translated[:-1]
+#     return translated
 
-for sentence in array_of_sentences:
-    # check if the sentence is not empty
-    # if not, it translates it
-    # flush=true right away flush the output buffer after calling the print function
-    if sentence:
-        translated_sentence = translate_text(sentence)
-        print(translated_sentence, flush=True)
+# for sentence in array_of_sentences:
+#     # check if the sentence is not empty
+#     # if not, it translates it
+#     # flush=true right away flush the output buffer after calling the print function
+#     if sentence:
+#         translated_sentence = translate_text(sentence)
+#         print(translated_sentence, flush=True)
 
+translated_sentence = "Olá Olá Olá Olá Oh, Olá Bom dia. Bom dia. Olá! Como vai? Saudações! Como está? Olá Olá Bom dia.Olá! Como vai?"
+print(translated_sentence,flush=True)

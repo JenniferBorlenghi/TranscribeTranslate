@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import "./styles.scss";
 import { extractVideoIdFromLink, processSource } from "./../../apis/api-client";
+import ProcessingAPI from "../ProcessingAPI";
 
 export default function Form() {
   const [sourceType, setSourceType] = useState("");
@@ -132,6 +133,10 @@ export default function Form() {
     const file = e.target.files[0];
     setSource(file);
   };
+
+  if (isProcessing) {
+    return <ProcessingAPI />;
+  }
 
   return (
     <div className="form" onSubmit={handleFormSubmit}>
