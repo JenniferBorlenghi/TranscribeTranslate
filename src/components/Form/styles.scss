@@ -1,24 +1,26 @@
 @import "./../../styles/variables.scss";
 
-form {
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
+.form-comp {
+  form {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
 
-  & > div {
-    margin-bottom: 20px;
-  }
+    & > div {
+      margin-bottom: 20px;
+    }
 
-  input[type="email"],
-  input[type="text"],
-  textarea,
-  select {
-    box-sizing: border-box;
-    width: 100%;
-    font-size: 1rem;
-    padding: 10px;
-    color: $secondary-color;
-    border: solid 1px $border-color;
-    border-radius: 4px;
+    input[type="email"],
+    input[type="text"],
+    textarea,
+    select {
+      box-sizing: border-box;
+      width: 100%;
+      font-size: 1rem;
+      padding: 10px;
+      color: $secondary-color;
+      border: solid 1px $border-color;
+      border-radius: 4px;
+    }
   }
 }

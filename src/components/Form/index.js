@@ -1,10 +1,8 @@
 import { useState, useRef } from "react";
+import { extractVideoIdFromLink, processSource } from "../../apis/api-client";
 import "./styles.scss";
-import { extractVideoIdFromLink, processSource } from "./../../apis/api-client";
-import ProcessingAPI from "../ProcessingAPI";
-import Result from "../Result";
 
-export default function Form() {
+export default function Form({ onStepChange, onProcessDone }) {
   const [sourceType, setSourceType] = useState("");
   const [isAudioSource, setIsAudioSource] = useState(false);
   const [isYoutubeSource, setIsYoutubeSource] = useState(false);
@@ -13,8 +11,6 @@ export default function Form() {
   const [resultLanguage, setResultLanguage] = useState("no translation");
   const [email, setEmail] = useState("");
   const [errorMessages, setErrorMessages] = useState([]);
-
-  const [step, setStep] = useState("Step 1 - Getting Data");
   const [output, setOutput] = useState("");
 
   const inputFile = useRef();
@@ -64,7 +60,7 @@ export default function Form() {
 
     if (arrayOfErrorMessages.length === 0) {
       console.log("ready to work!");
-      setStep("Step 2 - Processing");
+      onStepChange("Step 2 - Processing");
 
       if (sourceType === "youtube") {
         // extract video id from the url
@@ -84,7 +80,8 @@ export default function Form() {
           setOutput(videoTranscription);
         }
 
-        setStep("Step 3 - Done");
+        onStepChange("Step 3 - Done");
+        onProcessDone(videoTranscription);
       } else {
         const formData = new FormData();
         formData.append("audio", source);
@@ -101,8 +98,9 @@ export default function Form() {
         if (audioTranscription) {
           console.log(audioTranscription);
           setOutput(audioTranscription);
+          onProcessDone(audioTranscription);
         }
-        setStep("Step 3 - Done");
+        onStepChange("Step 3 - Done");
       }
 
       console.log("output", output);
@@ -133,12 +131,9 @@ export default function Form() {
     }
   };
 
-  const handleStepChange = (step1) => {
-    setStep(step1);
-  };
   return (
-    <div className="form" onSubmit={handleFormSubmit}>
-      {/* Conditionally display the error message */}
+    <div className="form-comp">
+      {/* Error Messages for when the user fill the input incorrectly */}
       {errorMessages.length > 0 && (
         <div>
           Invalid data:
@@ -150,126 +145,118 @@ export default function Form() {
         </div>
       )}
 
-      {step === "Step 1 - Getting Data" && (
-        <form>
-          {/* Source Type Radio Input */}
-          <div className="source-type">
-            Define your source:
-            <label>
-              <input
-                type="radio"
-                value="audio"
-                checked={sourceType === "audio"}
-                onChange={handleSourceTypeChange}
-              />
-              Audio
-            </label>
-            <label>
-              <input
-                type="radio"
-                value="youtube"
-                checked={sourceType === "youtube"}
-                onChange={handleSourceTypeChange}
-              />
-              Youtube URL
-            </label>
-          </div>
+      <form onSubmit={handleFormSubmit}>
+        {/* Source Type Radio Input */}
+        <div className="source-type">
+          Define your source:
+          <label>
+            <input
+              type="radio"
+              value="audio"
+              checked={sourceType === "audio"}
+              onChange={handleSourceTypeChange}
+            />
+            Audio
+          </label>
+          <label>
+            <input
+              type="radio"
+              value="youtube"
+              checked={sourceType === "youtube"}
+              onChange={handleSourceTypeChange}
+            />
+            Youtube URL
+          </label>
+        </div>
 
-          {/* Conditional Input File for audio source type */}
-          {isAudioSource && (
-            <div>
-              <label>
-                Select an audio:
-                <input
-                  type="file"
-                  accept="audio/*"
-                  onChange={(e) => setSource(e.target.files[0])}
-                  ref={inputFile}
-                />
-                {/*SEE WHY ADD REF HERE!!  */}
-              </label>
-            </div>
-          )}
-
-          {/* Conditional Input Text for YouTube URL source type */}
-          {isYoutubeSource && (
-            <div>
-              <label>
-                YouTube URL
-                <input
-                  type="text"
-                  placeholder="Enter the YouTube URL"
-                  value={source}
-                  onChange={(e) => setSource(e.target.value)}
-                />
-              </label>
-            </div>
-          )}
-
-          {/* Result type input radio */}
-          <div className="result-type">
-            To what format would you like to do receive your source?
-            <label>
-              <input
-                type="radio"
-                value="text"
-                checked={resultType === "text"}
-                onChange={(e) => setResultType(e.target.value)}
-              />
-              Text
-            </label>
-            <label>
-              <input
-                type="radio"
-                value="srt"
-                checked={resultType === "srt"}
-                onChange={(e) => setResultType(e.target.value)}
-              />
-              Subtitles
-            </label>
-          </div>
-
-          {/* Result language select input */}
+        {/* Conditional Input File for audio source type */}
+        {isAudioSource && (
           <div>
             <label>
-              To what language you would like to translate your source?
-              <select
-                value={resultLanguage}
-                onChange={(e) => setResultLanguage(e.target.value)}
-              >
-                <option value="no translation">No translation</option>
-                <option value="english">English</option>
-                <option value="portuguese">Portuguese</option>
-                <option value="filipino">Filipino</option>
-                <option value="japanese">Japanese</option>
-                <option value="spanish">Spanish</option>
-              </select>
+              Select an audio:
+              <input
+                type="file"
+                accept="audio/*"
+                onChange={(e) => setSource(e.target.files[0])}
+                ref={inputFile}
+              />
+              {/*SEE WHY ADD REF HERE!!  */}
             </label>
           </div>
+        )}
 
-          {/* User email input */}
+        {/* Conditional Input Text for YouTube URL source type */}
+        {isYoutubeSource && (
           <div>
             <label>
-              Let us know your email so we can let you know when your processing
-              is done
+              YouTube URL
               <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                placeholder="Enter the YouTube URL"
+                value={source}
+                onChange={(e) => setSource(e.target.value)}
               />
             </label>
           </div>
+        )}
 
-          <button>Start Processing</button>
-        </form>
-      )}
+        {/* Result type input radio */}
+        <div className="result-type">
+          To what format would you like to do receive your source?
+          <label>
+            <input
+              type="radio"
+              value="text"
+              checked={resultType === "text"}
+              onChange={(e) => setResultType(e.target.value)}
+            />
+            Text
+          </label>
+          <label>
+            <input
+              type="radio"
+              value="srt"
+              checked={resultType === "srt"}
+              onChange={(e) => setResultType(e.target.value)}
+            />
+            Subtitles
+          </label>
+        </div>
 
-      {step === "Step 2 - Processing" && <ProcessingAPI />}
+        {/* Result language select input */}
+        <div>
+          <label>
+            To what language you would like to translate your source?
+            <select
+              value={resultLanguage}
+              onChange={(e) => setResultLanguage(e.target.value)}
+            >
+              <option value="no translation">No translation</option>
+              <option value="english">English</option>
+              <option value="portuguese">Portuguese</option>
+              <option value="filipino">Filipino</option>
+              <option value="japanese">Japanese</option>
+              <option value="spanish">Spanish</option>
+            </select>
+          </label>
+        </div>
 
-      {step === "Step 3 - Done" && (
-        <Result output={output} onChangeStep={handleStepChange} />
-      )}
+        {/* User email input */}
+        <div>
+          <label>
+            Let us know your email so we can let you know when your processing
+            is done
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </label>
+        </div>
+
+        <button>Start Processing</button>
+      </form>
     </div>
   );
 }
