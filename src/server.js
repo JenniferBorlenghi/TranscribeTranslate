@@ -1,5 +1,5 @@
 const express = require("express");
-const { spawn, exec } = require("child_process");
+const { spawn } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const { handleChildProcessOutput } = require("./apis/childProcess");
@@ -11,50 +11,30 @@ const port = 3000;
 app.use(express.json());
 app.use(fileUpload());
 
-app.get("/api/audio", (req, res) => {
-  console.log("audio");
-
+app.get("/api/download/youtube/audio", (req, res) => {
   const { video_id } = req.query;
+
   if (typeof video_id !== "string") {
     res.status(400).json({ error: "Invalid request" });
     return;
   }
-
-  console.log("video ID:", video_id);
 
   const scriptPath = path.join(
     process.cwd(),
     "/src/scripts/youtube-download-audio.sh"
   );
 
-  // making the script executable
+  // changing the permission of a file located at the scriptPath
+  // the permission gave is 755 which meand the user can read, write
+  // and execute the file
   fs.chmodSync(scriptPath, "755");
 
   const cmd = spawn(scriptPath, [video_id || ""]);
 
   handleChildProcessOutput(cmd, res);
-
-  // cmd.stdout.on("data", (data) => {
-  //   // Handle the output from the child process if needed
-  //   console.log("Child process output:", data.toString());
-  // });
-
-  // cmd.stderr.on("data", (data) => {
-  //   // Handle any error output from the child process if needed
-  //   console.error("Child process error:", data.toString());
-  // });
-
-  // cmd.on("close", (code) => {
-  //   // Handle the child process close event and send the response
-  //   if (code === 0) {
-  //     res.send("Audio downloaded successfully");
-  //   } else {
-  //     res.status(500).json({ error: "Failed to download audio" });
-  //   }
-  // });
 });
 
-app.post("/api/upload", (req, res) => {
+app.post("/api/upload/audio", (req, res) => {
   // Check if files were uploaded
   if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400).send("No files were uploaded.");
@@ -101,9 +81,6 @@ app.post("/api/transcript/audio", (req, res) => {
   const fileName = req.files.audio.name;
   const resultType = req.body.resultType;
 
-  console.log("entering server transcript audio", fileName);
-  console.log("result type", resultType);
-
   const cmd = spawn(
     "python3",
     [
@@ -139,5 +116,5 @@ app.post("/api/translate", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`App listening on port ${port}`);
 });

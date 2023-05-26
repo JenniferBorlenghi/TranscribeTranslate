@@ -11,7 +11,6 @@ export default function Form({ onStepChange, onProcessDone }) {
   const [resultLanguage, setResultLanguage] = useState("no translation");
   const [email, setEmail] = useState("");
   const [errorMessages, setErrorMessages] = useState([]);
-  const [output, setOutput] = useState("");
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -44,7 +43,6 @@ export default function Form({ onStepChange, onProcessDone }) {
     setErrorMessages(arrayOfErrorMessages);
 
     if (arrayOfErrorMessages.length === 0) {
-      console.log("ready to work!");
       onStepChange("Step 2 - Processing");
 
       if (sourceType === "youtube") {
@@ -55,14 +53,10 @@ export default function Form({ onStepChange, onProcessDone }) {
           videoId,
           resultType,
           resultLanguage,
-          email,
-          (message) => {
-            console.log((prev) => prev + message);
-          }
+          email
         );
         if (videoTranscription) {
           console.log(videoTranscription);
-          setOutput(videoTranscription);
         }
 
         onStepChange("Step 3 - Done");
@@ -75,20 +69,15 @@ export default function Form({ onStepChange, onProcessDone }) {
           formData,
           resultType,
           resultLanguage,
-          email,
-          (message) => {
-            console.log((prev) => prev + message);
-          }
+          email
         );
         if (audioTranscription) {
           console.log(audioTranscription);
-          setOutput(audioTranscription);
+
           onProcessDone(audioTranscription);
         }
         onStepChange("Step 3 - Done");
       }
-
-      console.log("output", output);
 
       // clear fields after sending them
       setSourceType("");
@@ -116,7 +105,7 @@ export default function Form({ onStepChange, onProcessDone }) {
 
   return (
     <div className="form-comp">
-      <h2>Transcribe & Translate an audio or a Youtube video</h2>
+      <h2>Audio and YouTube Video Transcription & Translation</h2>
       {/* Error Messages for when the user fill the input incorrectly */}
       {errorMessages.length > 0 && (
         <div className="form-validate">

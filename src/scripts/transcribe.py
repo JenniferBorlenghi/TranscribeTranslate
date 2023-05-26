@@ -12,15 +12,15 @@ elif audio_source == "audio":
     audio_file_path = os.path.join(os.getcwd(), 'tmp', source_name)
 
 audio_file = open(audio_file_path, "rb")
-# transcript = openai.Audio.transcribe(
-#   file=audio_file,
-#   model="whisper-1",
-#   response_format=result_type,
-# #   prompt=(
-# #       'I am trying to transcribe this audio'
-# #   )
-# )
+transcript = openai.Audio.transcribe(
+  file=audio_file,
+  model="whisper-1",
+  response_format=result_type,
+#   prompt=(
+#       'I am trying to transcribe this audio'
+#   )
+)
 
-transcript="Hello. Hello. Hey. Hey. Oh, hi. Good morning. Good morning. What's up? Hey, how are you? Hey, how are you? Hi. Hi. Hi. Good morning."
+# transcript="Hello. Hello. Hey. Hey. Oh, hi. Good morning. Good morning. What's up? Hey, how are you? Hey, how are you? Hi. Hi. Hi. Good morning."
 
 print(transcript)

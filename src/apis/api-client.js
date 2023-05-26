@@ -3,55 +3,30 @@ export function extractVideoIdFromLink(url) {
   return new URL(url).searchParams.get("v");
 }
 
-export async function processSource(
-  source,
-  resultType,
-  resultLanguage,
-  email,
-  callback
-) {
+export async function processSource(source, resultType, resultLanguage, email) {
   let transcription = "";
 
   if (typeof source === "string") {
-    callback("Downloading audio...\n");
-    await downloadAudioFromVideo(source, callback);
-
-    callback("\nTranscribing audio from Youtube. It takes a while...\n");
-    transcription = await transcribeAudioFromVideo(
-      source,
-      resultType,
-      callback
-    );
-    console.log("transcription youtube", transcription);
+    await downloadAudioFromVideo(source);
+    transcription = await transcribeAudioFromVideo(source, resultType);
   } else {
-    callback("Downloading audio...\n");
-    await uploadAudio(source, callback);
-    console.log("audio uploaded");
-
-    transcription = await transcribeAudioFromAudio(
-      source,
-      resultType,
-      callback
-    );
-    console.log("trascription Audio", transcription);
+    await uploadAudio(source);
+    transcription = await transcribeAudioFromAudio(source, resultType);
   }
 
   // if it was possible to get the transcription of the audio"
   if (transcription) {
     // if translation is requested, then translate
     if (resultLanguage !== "no translation") {
-      callback("\nTranslating transcription...\n");
-
       const translatedTranscription = await translate(
         transcription,
-        resultLanguage,
-        callback
+        resultLanguage
       );
-      callback("\nDone!");
+
       return translatedTranscription;
     } else {
       // if no translation requested, return the transcription
-      callback("\nDone!");
+
       return transcription;
     }
   }
@@ -60,10 +35,10 @@ export async function processSource(
   return false;
 }
 
-export async function downloadAudioFromVideo(videoId, onProgress) {
+export async function downloadAudioFromVideo(videoId) {
   // calling the API (backend) to get the audio
   const res = await fetch(
-    `http://localhost:3000/api/audio?${new URLSearchParams({
+    `http://localhost:3000/api/download/youtube/audio?${new URLSearchParams({
       video_id: videoId,
     })}`
   );
@@ -72,12 +47,12 @@ export async function downloadAudioFromVideo(videoId, onProgress) {
   const reader = res.body?.getReader();
 
   if (reader) {
-    return streamedResponse(reader, onProgress);
+    return streamedResponse(reader);
   }
 }
 
-export async function uploadAudio(source, onProgress) {
-  const res = await fetch("/api/upload", {
+export async function uploadAudio(source) {
+  const res = await fetch("/api/upload/audio", {
     method: "POST",
     body: source,
   });
@@ -85,15 +60,13 @@ export async function uploadAudio(source, onProgress) {
   const reader = res.body?.getReader();
 
   if (reader) {
-    return streamedResponse(reader, onProgress);
+    return streamedResponse(reader);
   } else {
     return false;
   }
 }
 
-export async function transcribeAudioFromVideo(source, resultType, onProgress) {
-  console.log("source", typeof source);
-
+export async function transcribeAudioFromVideo(source, resultType) {
   const res = await fetch(
     `/api/transcript/youtube?${new URLSearchParams({
       source,
@@ -105,13 +78,13 @@ export async function transcribeAudioFromVideo(source, resultType, onProgress) {
   const reader = res.body?.getReader();
 
   if (reader) {
-    return streamedResponse(reader, onProgress);
+    return streamedResponse(reader);
   } else {
     return false;
   }
 }
 
-export async function transcribeAudioFromAudio(source, resultType, onProgress) {
+export async function transcribeAudioFromAudio(source, resultType) {
   source.append("resultType", resultType);
 
   const res = await fetch("/api/transcript/audio", {
@@ -122,13 +95,13 @@ export async function transcribeAudioFromAudio(source, resultType, onProgress) {
   const reader = res.body?.getReader();
 
   if (reader) {
-    return streamedResponse(reader, onProgress);
+    return streamedResponse(reader);
   } else {
     return false;
   }
 }
 
-export async function translate(transcription, resultLanguage, onProgress) {
+export async function translate(transcription, resultLanguage) {
   const data = { transcription, resultLanguage };
 
   const res = await fetch(`/api/translate`, {
@@ -142,15 +115,16 @@ export async function translate(transcription, resultLanguage, onProgress) {
   const reader = res.body?.getReader();
 
   if (reader) {
-    return streamedResponse(reader, onProgress);
+    return streamedResponse(reader);
   } else {
     return false;
   }
 }
 
-async function streamedResponse(reader, onProgress) {
+// function that get the object reader and read/decode it in chunks
+// to display in the web page
+async function streamedResponse(reader) {
   return await new Promise((resolve) => {
-    console.log("on progress", reader);
     const decoder = new TextDecoder();
     let result = "";
 
@@ -162,8 +136,6 @@ async function streamedResponse(reader, onProgress) {
 
       const output = decoder.decode(value);
       result += output;
-
-      onProgress(output);
 
       reader.read().then(readChunk);
     };
