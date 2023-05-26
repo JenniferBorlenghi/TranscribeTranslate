@@ -1,0 +1,20 @@
+@import "./../../styles/variables.scss";
+
+.result-comp {
+  display: flex;
+  flex-direction: column;
+  margin: 40px 100px;
+
+  .output-place {
+    padding: 20px;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    max-height: 500px;
+    overflow: auto;
+    margin-bottom: 20px;
+  }
+
+  button {
+    @include button;
+  }
+}

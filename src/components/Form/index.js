@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { extractVideoIdFromLink, processSource } from "../../apis/api-client";
 import "./styles.scss";
 
@@ -13,23 +13,8 @@ export default function Form({ onStepChange, onProcessDone }) {
   const [errorMessages, setErrorMessages] = useState([]);
   const [output, setOutput] = useState("");
 
-  const inputFile = useRef();
-
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-
-    console.log(
-      "Source Type: " +
-        sourceType +
-        "\nSource: " +
-        source +
-        "\nResult Type: " +
-        resultType +
-        "\nResult Language: " +
-        resultLanguage +
-        "\nEmail: " +
-        email
-    );
 
     const arrayOfErrorMessages = [];
 
@@ -113,8 +98,6 @@ export default function Form({ onStepChange, onProcessDone }) {
       setResultType("");
       setResultLanguage("");
       setEmail("");
-      // DEAL WITH THAT LATER ON
-      //   inputFile.current.value = "";
     }
   };
 
@@ -133,9 +116,10 @@ export default function Form({ onStepChange, onProcessDone }) {
 
   return (
     <div className="form-comp">
+      <h2>Transcribe & Translate an audio or a Youtube video</h2>
       {/* Error Messages for when the user fill the input incorrectly */}
       {errorMessages.length > 0 && (
-        <div>
+        <div className="form-validate">
           Invalid data:
           <ul>
             {errorMessages.map((error, index) => (
@@ -144,7 +128,6 @@ export default function Form({ onStepChange, onProcessDone }) {
           </ul>
         </div>
       )}
-
       <form onSubmit={handleFormSubmit}>
         {/* Source Type Radio Input */}
         <div className="source-type">
@@ -178,9 +161,7 @@ export default function Form({ onStepChange, onProcessDone }) {
                 type="file"
                 accept="audio/*"
                 onChange={(e) => setSource(e.target.files[0])}
-                ref={inputFile}
               />
-              {/*SEE WHY ADD REF HERE!!  */}
             </label>
           </div>
         )}

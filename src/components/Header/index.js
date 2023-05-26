@@ -7,7 +7,6 @@ export default function Header() {
     <header>
       <BsSoundwave className="sound-icon" />
       <AiOutlineFontSize className="font-icon" />
-      <div className="app-name">Transcribe-late</div>
     </header>
   );
 }
