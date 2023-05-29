@@ -46,4 +46,4 @@ for sentence in array_of_sentences:
 
 # translated_sentence = "Olá Olá Olá Olá Oh, Olá Bom dia. Bom dia. Olá! Como vai? Saudações! Como está? Olá Olá Bom dia.Olá! Como vai?"
 
-print(translated_sentence,flush=True)
+# print(translated_sentence,flush=True)
