@@ -1,9 +1,9 @@
 const express = require("express");
 const path = require("path");
-const { executeCmd } = require("./apis/execute-cmd");
+const { executeCmd } = require("./execute-cmd");
 const fileUpload = require("express-fileupload");
 const nodemailer = require("nodemailer");
-const { EMAIL, PASSWORD } = require("./../env");
+const { EMAIL, PASSWORD } = require("../../env");
 const fs = require("fs");
 
 const app = express();
@@ -22,7 +22,7 @@ app.get("/api/download/youtube/audio", (req, res) => {
 
   const isPythonScript = false;
   const args = [video_id];
-  const basename = "/src/scripts/youtube-download-audio.sh";
+  const basename = "/src/server/scripts/youtube-download-audio.sh";
 
   const onSuccess = (outputStream) => {
     outputStream.pipe(res);
@@ -71,7 +71,7 @@ app.get("/api/transcript/youtube", (req, res) => {
   const isPythonScript = true;
   const { source, resultType } = req.query;
   const args = [source, resultType, "youtube"];
-  const basename = "/src/scripts/transcribe.py";
+  const basename = "/src/server/scripts/transcribe.py";
 
   const onSuccess = (outputStream) => {
     outputStream.pipe(res);
@@ -106,7 +106,7 @@ app.post("/api/transcript/audio", (req, res) => {
   const resultType = req.body.resultType;
   const args = [fileName, resultType, "audio"];
 
-  const basename = "/src/scripts/transcribe.py";
+  const basename = "/src/server/scripts/transcribe.py";
 
   const onSuccess = (outputStream) => {
     outputStream.pipe(res);
@@ -135,7 +135,7 @@ app.post("/api/translate", (req, res) => {
   const isPythonScript = true;
   const { transcription, resultLanguage } = req.body;
   const args = [transcription, resultLanguage];
-  const basename = "/src/scripts/translate.py";
+  const basename = "/src/server/scripts/translate.py";
 
   const onSuccess = (outputStream) => {
     outputStream.pipe(res);

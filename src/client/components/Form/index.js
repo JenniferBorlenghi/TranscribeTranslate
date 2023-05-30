@@ -3,7 +3,7 @@ import {
   extractVideoIdFromLink,
   processSource,
   sendEmail,
-} from "../../apis/api-client";
+} from "./../../api-client";
 import "./styles.scss";
 
 export default function Form({ onStepChange, onProcessDone }) {
