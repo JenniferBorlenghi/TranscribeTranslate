@@ -2,7 +2,7 @@ import "./styles.scss";
 
 export default function Result({ output, onChangeStep }) {
   const handleAnotherProcessing = () => {
-    onChangeStep("Step 1 - Getting Data");
+    onChangeStep("Input");
   };
   return (
     <div className="result-comp">

@@ -2,7 +2,7 @@ const express = require("express");
 const { spawn } = require("child_process");
 const fs = require("fs");
 const path = require("path");
-const { handleChildProcessOutput } = require("./apis/childProcess");
+const { executeCmd } = require("./apis/execute-cmd");
 const fileUpload = require("express-fileupload");
 
 const app = express();
@@ -19,19 +19,31 @@ app.get("/api/download/youtube/audio", (req, res) => {
     return;
   }
 
-  const scriptPath = path.join(
-    process.cwd(),
-    "/src/scripts/youtube-download-audio.sh"
-  );
+  const isPythonScript = false;
+  const args = [video_id];
+  const basename = "/src/scripts/youtube-download-audio.sh";
 
-  // changing the permission of a file located at the scriptPath
-  // the permission gave is 755 which meand the user can read, write
-  // and execute the file
-  fs.chmodSync(scriptPath, "755");
+  const onSuccess = (outputStream) => {
+    outputStream.pipe(res);
 
-  const cmd = spawn(scriptPath, [video_id || ""]);
+    res.writeHead(200, {
+      "Content-Type": "text/plain",
+      "Cache-Control": "no-cache",
+      "Content-Encoding": "none",
+      "Access-Control-Allow-Origin": "*",
+    });
+  };
 
-  handleChildProcessOutput(cmd, res);
+  const onError = (errorChunk) => {
+    res.write(
+      errorChunk
+        .split("\n")
+        .map((line) => "[Error] " + line)
+        .join("\n")
+    );
+  };
+
+  executeCmd(isPythonScript, args, basename, onSuccess, onError);
 });
 
 app.post("/api/upload/audio", (req, res) => {
@@ -55,22 +67,32 @@ app.post("/api/upload/audio", (req, res) => {
 });
 
 app.get("/api/transcript/youtube", (req, res) => {
+  const isPythonScript = true;
   const { source, resultType } = req.query;
+  const args = [source, resultType, "youtube"];
+  const basename = "/src/scripts/transcribe.py";
 
-  const cmd = spawn(
-    "python3",
-    [
-      path.join(process.cwd(), "/src/scripts/transcribe.py"),
-      source || "",
-      resultType || "",
-      "youtube",
-    ],
-    {
-      cwd: process.cwd(),
-    }
-  );
+  const onSuccess = (outputStream) => {
+    outputStream.pipe(res);
 
-  handleChildProcessOutput(cmd, res);
+    res.writeHead(200, {
+      "Content-Type": "text/plain",
+      "Cache-Control": "no-cache",
+      "Content-Encoding": "none",
+      "Access-Control-Allow-Origin": "*",
+    });
+  };
+
+  const onError = (errorChunk) => {
+    res.write(
+      errorChunk
+        .split("\n")
+        .map((line) => "[Error] " + line)
+        .join("\n")
+    );
+  };
+
+  executeCmd(isPythonScript, args, basename, onSuccess, onError);
 });
 
 app.post("/api/transcript/audio", (req, res) => {
@@ -78,41 +100,63 @@ app.post("/api/transcript/audio", (req, res) => {
     return res.status(400).send("No files were uploaded.");
   }
 
+  const isPythonScript = true;
   const fileName = req.files.audio.name;
   const resultType = req.body.resultType;
+  const args = [fileName, resultType, "audio"];
 
-  const cmd = spawn(
-    "python3",
-    [
-      path.join(process.cwd(), "/src/scripts/transcribe.py"),
-      fileName || "",
-      resultType || "",
-      "audio",
-    ],
-    {
-      cwd: process.cwd(),
-    }
-  );
+  const basename = "/src/scripts/transcribe.py";
 
-  handleChildProcessOutput(cmd, res);
+  const onSuccess = (outputStream) => {
+    outputStream.pipe(res);
+
+    res.writeHead(200, {
+      "Content-Type": "text/plain",
+      "Cache-Control": "no-cache",
+      "Content-Encoding": "none",
+      "Access-Control-Allow-Origin": "*",
+    });
+  };
+
+  const onError = (errorChunk) => {
+    res.write(
+      errorChunk
+        .split("\n")
+        .map((line) => "[Error] " + line)
+        .join("\n")
+    );
+  };
+
+  executeCmd(isPythonScript, args, basename, onSuccess, onError);
 });
 
 app.post("/api/translate", (req, res) => {
+  const isPythonScript = true;
   const { transcription, resultLanguage } = req.body;
+  const args = [transcription, resultLanguage];
+  const basename = "/src/scripts/translate.py";
 
-  const cmd = spawn(
-    "python3",
-    [
-      path.join(process.cwd(), "/src/scripts/translate.py"),
-      transcription || "",
-      resultLanguage || "",
-    ],
-    {
-      cwd: process.cwd(),
-    }
-  );
+  const onSuccess = (outputStream) => {
+    outputStream.pipe(res);
 
-  handleChildProcessOutput(cmd, res);
+    res.writeHead(200, {
+      "Content-Type": "text/plain",
+      "Cache-Control": "no-cache",
+      "Content-Encoding": "none",
+      "Access-Control-Allow-Origin": "*",
+    });
+  };
+
+  const onError = (errorChunk) => {
+    res.write(
+      errorChunk
+        .split("\n")
+        .map((line) => "[Error] " + line)
+        .join("\n")
+    );
+  };
+
+  executeCmd(isPythonScript, args, basename, onSuccess, onError);
 });
 
 app.listen(port, () => {

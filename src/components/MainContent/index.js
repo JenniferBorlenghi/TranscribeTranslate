@@ -4,7 +4,7 @@ import ProcessingAPI from "../ProcessingAPI";
 import Result from "../Result";
 
 export default function MainContent() {
-  const [step, setStep] = useState("Step 1 - Getting Data");
+  const [step, setStep] = useState("Input");
   const [result, setResult] = useState("");
 
   const handleStepChange = (step1) => {
@@ -16,16 +16,16 @@ export default function MainContent() {
   };
   return (
     <div className="main-content">
-      {step === "Step 1 - Getting Data" && (
+      {step === "Input" && (
         <Form
           onStepChange={handleStepChange}
           onProcessDone={handleProcessDone}
         />
       )}
 
-      {step === "Step 2 - Processing" && <ProcessingAPI />}
+      {step === "Processing" && <ProcessingAPI />}
 
-      {step === "Step 3 - Done" && (
+      {step === "Output" && (
         <Result output={result} onChangeStep={handleStepChange} />
       )}
     </div>

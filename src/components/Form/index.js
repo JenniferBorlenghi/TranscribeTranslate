@@ -43,7 +43,7 @@ export default function Form({ onStepChange, onProcessDone }) {
     setErrorMessages(arrayOfErrorMessages);
 
     if (arrayOfErrorMessages.length === 0) {
-      onStepChange("Step 2 - Processing");
+      onStepChange("Processing");
 
       if (sourceType === "youtube") {
         // extract video id from the url
@@ -59,7 +59,7 @@ export default function Form({ onStepChange, onProcessDone }) {
           console.log(videoTranscription);
         }
 
-        onStepChange("Step 3 - Done");
+        onStepChange("Output");
         onProcessDone(videoTranscription);
       } else {
         const formData = new FormData();
@@ -76,7 +76,7 @@ export default function Form({ onStepChange, onProcessDone }) {
 
           onProcessDone(audioTranscription);
         }
-        onStepChange("Step 3 - Done");
+        onStepChange("Output");
       }
 
       // clear fields after sending them
