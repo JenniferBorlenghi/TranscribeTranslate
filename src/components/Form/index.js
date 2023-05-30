@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { extractVideoIdFromLink, processSource } from "../../apis/api-client";
+import {
+  extractVideoIdFromLink,
+  processSource,
+  sendEmail,
+} from "../../apis/api-client";
 import "./styles.scss";
 
 export default function Form({ onStepChange, onProcessDone }) {
@@ -58,9 +62,10 @@ export default function Form({ onStepChange, onProcessDone }) {
         if (videoTranscription) {
           console.log(videoTranscription);
         }
-
-        onStepChange("Output");
         onProcessDone(videoTranscription);
+        onStepChange("Output");
+
+        sendEmail(email, videoTranscription);
       } else {
         const formData = new FormData();
         formData.append("audio", source);
@@ -75,8 +80,10 @@ export default function Form({ onStepChange, onProcessDone }) {
           console.log(audioTranscription);
 
           onProcessDone(audioTranscription);
+          onStepChange("Output");
+
+          sendEmail(email, audioTranscription);
         }
-        onStepChange("Output");
       }
 
       // clear fields after sending them

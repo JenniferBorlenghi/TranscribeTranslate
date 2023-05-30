@@ -145,3 +145,27 @@ async function streamedResponse(reader) {
     reader.read().then(readChunk);
   });
 }
+
+export async function sendEmail(email, output) {
+  console.log("send email now!");
+
+  const data = { email, output };
+
+  try {
+    const res = await fetch("/api/send/email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (res.ok) {
+      console.log("Email sent successfully");
+    } else {
+      console.log("Error sending email", res);
+    }
+  } catch (error) {
+    console.log("Error sending meail: ", error);
+  }
+}

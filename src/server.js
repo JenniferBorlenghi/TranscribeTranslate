@@ -2,6 +2,8 @@ const express = require("express");
 const path = require("path");
 const { executeCmd } = require("./apis/execute-cmd");
 const fileUpload = require("express-fileupload");
+const nodemailer = require("nodemailer");
+const { EMAIL, PASSWORD } = require("./../env");
 
 const app = express();
 const port = 3000;
@@ -155,6 +157,59 @@ app.post("/api/translate", (req, res) => {
   };
 
   executeCmd(isPythonScript, args, basename, onSuccess, onError);
+});
+
+app.post("/api/send/email", async (req, res) => {
+  const { email, output } = req.body;
+  console.log("output", output);
+
+  console.log("email", email);
+
+  let config = {
+    service: "gmail",
+    auth: {
+      user: EMAIL,
+      pass: PASSWORD,
+    },
+  };
+
+  // Generate test SMTP service account from ethereal.email
+  // Only needed if you don't have a real mail account for testing
+  // let testAccount = await nodemailer.createTestAccount();
+
+  // create reusable transporter object using the default SMTP transport
+  // let transporter = nodemailer.createTransport({
+  //   host: "smtp.ethereal.email",
+  //   port: 587,
+  //   secure: false, // true for 465, false for other ports
+  //   auth: {
+  //     user: testAccount.user, // generated ethereal user
+  //     pass: testAccount.pass, // generated ethereal password
+  //   },
+  // });
+
+  let transporter = nodemailer.createTransport(config);
+
+  let message = {
+    from: EMAIL, // sender address
+    to: email, // list of receivers
+    subject: "Your transcript is done!", // Subject line
+    text: output, // plain text body
+    html: output, // html body
+  };
+
+  transporter
+    .sendMail(message)
+    .then((info) => {
+      return res.status(201).json({
+        msg: "you should receive an email",
+        info: info.messageId,
+        preview: nodemailer.getTestMessageUrl(info),
+      });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
 });
 
 app.listen(port, () => {

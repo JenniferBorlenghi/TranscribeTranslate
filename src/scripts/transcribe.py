@@ -22,6 +22,8 @@ transcript = openai.Audio.transcribe(
 #   )
 )
 
+
+
 print(transcript, flush=True)
 
  
