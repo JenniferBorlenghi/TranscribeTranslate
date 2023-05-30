@@ -26,9 +26,8 @@ export default function Form({ onStepChange, onProcessDone }) {
       sourceType === "" ||
       source === "" ||
       resultType === "" ||
-      resultLanguage === ""
-      // ||
-      // email === ""
+      resultLanguage === "" ||
+      email === ""
     ) {
       arrayOfErrorMessages.push("All fields are required.");
     }

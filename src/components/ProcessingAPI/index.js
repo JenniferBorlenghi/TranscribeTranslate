@@ -8,6 +8,7 @@ export default function ProcessingSpinner() {
       <div className="spinner-loading">
         <ClipLoader color="#6a4d54" size={120} aria-label="Loading Spinner" />
       </div>
+      <p>Once it's ready, you will receive it in your email inbox.</p>
     </div>
   );
 }

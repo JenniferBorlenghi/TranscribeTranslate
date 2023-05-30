@@ -4,6 +4,7 @@ const { executeCmd } = require("./apis/execute-cmd");
 const fileUpload = require("express-fileupload");
 const nodemailer = require("nodemailer");
 const { EMAIL, PASSWORD } = require("./../env");
+const fs = require("fs");
 
 const app = express();
 const port = 3000;
@@ -173,29 +174,37 @@ app.post("/api/send/email", async (req, res) => {
     },
   };
 
-  // Generate test SMTP service account from ethereal.email
-  // Only needed if you don't have a real mail account for testing
-  // let testAccount = await nodemailer.createTestAccount();
-
-  // create reusable transporter object using the default SMTP transport
-  // let transporter = nodemailer.createTransport({
-  //   host: "smtp.ethereal.email",
-  //   port: 587,
-  //   secure: false, // true for 465, false for other ports
-  //   auth: {
-  //     user: testAccount.user, // generated ethereal user
-  //     pass: testAccount.pass, // generated ethereal password
-  //   },
-  // });
-
   let transporter = nodemailer.createTransport(config);
 
+  let messageContent = `<p>Dear user,</p><br><p>Your source has been processed, and the result is now available. Please find the attached file for the details.</p><br><p><b>Result:</b> ${output}</p><br><p>Best Regards,</p><p>Tt Transcription and Translate Team</p>`;
+
+  fs.writeFile("result.txt", output, (err) => {
+    if (err) {
+      console.log("Error writing to file:", err);
+    } else {
+      console.log("Text file created successfully");
+    }
+  });
+
+  fs.readFile("result.txt", "utf8", (err, content) => {
+    if (err) {
+      console.log("Errpr reading file:", err);
+      return;
+    }
+  });
+
   let message = {
-    from: EMAIL, // sender address
-    to: email, // list of receivers
-    subject: "Your transcript is done!", // Subject line
+    from: EMAIL,
+    to: email,
+    subject: "Your transcript/translate is done!", // Subject line
     text: output, // plain text body
-    html: output, // html body
+    html: messageContent, // html body
+    attachments: [
+      {
+        filename: "result.txt",
+        content: output,
+      },
+    ],
   };
 
   transporter
