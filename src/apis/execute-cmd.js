@@ -11,13 +11,7 @@ function executeCmd(isPythonScript, args, basename, onSucess, onError) {
   let cmd = "";
 
   if (isPythonScript) {
-    cmd = spawn(
-      "python3",
-      [scriptPath, ...args]
-      // ,{
-      //   cwd: process.cwd(),
-      // }
-    );
+    cmd = spawn("python3", [scriptPath, ...args]);
   } else {
     cmd = spawn(scriptPath, args);
   }

@@ -1,6 +1,4 @@
 const express = require("express");
-const { spawn } = require("child_process");
-const fs = require("fs");
 const path = require("path");
 const { executeCmd } = require("./apis/execute-cmd");
 const fileUpload = require("express-fileupload");

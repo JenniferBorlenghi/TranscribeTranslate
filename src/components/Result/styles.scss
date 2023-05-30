@@ -14,7 +14,17 @@
     margin-bottom: 20px;
   }
 
-  button {
-    @include button;
+  .result-buttons {
+    display: flex;
+    justify-content: space-between;
+
+    button {
+      @include button;
+      width: 49%;
+    }
+
+    .download-button {
+      background-color: #ffc2b5;
+    }
   }
 }
