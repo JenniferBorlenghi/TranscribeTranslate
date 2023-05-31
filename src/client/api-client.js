@@ -14,8 +14,6 @@ export async function processSource(source, resultType, resultLanguage, email) {
     transcription = await transcribeAudioFromAudio(source, resultType);
   }
 
-  console.log("transcription", transcription);
-
   // if it was possible to get the transcription of the audio"
   if (transcription) {
     // if translation is requested, then translate
@@ -24,7 +22,6 @@ export async function processSource(source, resultType, resultLanguage, email) {
         transcription,
         resultLanguage
       );
-      console.log("translated", translatedTranscription);
       return translatedTranscription;
     } else {
       // if no translation requested, return the transcription
@@ -40,7 +37,7 @@ export async function processSource(source, resultType, resultLanguage, email) {
 export async function downloadAudioFromVideo(videoId) {
   // calling the API (backend) to get the audio
   const res = await fetch(
-    `http://localhost:3000/api/download/youtube/audio?${new URLSearchParams({
+    `/api/download/youtube/audio?${new URLSearchParams({
       video_id: videoId,
     })}`
   );
@@ -147,8 +144,6 @@ async function streamedResponse(reader) {
 }
 
 export async function sendEmail(email, output) {
-  console.log("send email now!");
-
   const data = { email, output };
 
   try {

@@ -58,13 +58,12 @@ export default function Form({ onStepChange, onProcessDone }) {
           resultLanguage,
           email
         );
-        if (videoTranscription) {
-          console.log(videoTranscription);
-        }
-        onProcessDone(videoTranscription);
-        onStepChange("Output");
 
-        sendEmail(email, videoTranscription);
+        if (videoTranscription) {
+          onProcessDone(videoTranscription);
+          onStepChange("Output");
+          sendEmail(email, videoTranscription);
+        }
       } else {
         const formData = new FormData();
         formData.append("audio", source);
@@ -75,12 +74,10 @@ export default function Form({ onStepChange, onProcessDone }) {
           resultLanguage,
           email
         );
-        if (audioTranscription) {
-          console.log(audioTranscription);
 
+        if (audioTranscription) {
           onProcessDone(audioTranscription);
           onStepChange("Output");
-
           sendEmail(email, audioTranscription);
         }
       }

@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const { spawn } = require("child_process");
 
-function executeCmd(isPythonScript, args, basename, onSucess, onError) {
+function executeCmd(isPythonScript, args, basename, onSucess, onError, res) {
   const scriptPath = path.join(process.cwd(), basename);
 
   // giving permissions to execute the command to this path
@@ -23,10 +23,10 @@ function executeCmd(isPythonScript, args, basename, onSucess, onError) {
   cmd.stderr.on("data", (chunk) => {
     const chunkStr = chunk.toString("utf-8");
     console.error("[Error]", chunkStr);
-    onError(chunkStr);
+    onError(chunkStr, res);
   });
 
-  onSucess(cmd.stdout);
+  onSucess(cmd.stdout, res);
 }
 
 module.exports = { executeCmd };
