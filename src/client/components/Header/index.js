@@ -7,7 +7,7 @@ export default function Header() {
     <header>
       <BsSoundwave className="sound-icon" />
       <AiOutlineFontSize className="font-icon" />
-      <div className="app-name"> Transcription and Translate</div>
+      <div className="app-name"> Transcript & Translate</div>
     </header>
   );
 }

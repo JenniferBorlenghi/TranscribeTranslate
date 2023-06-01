@@ -11,6 +11,7 @@ app.use(express.json());
 app.use(fileUpload());
 
 const onSuccess = (outputStream, res) => {
+  console.log("hereeeee", res.status);
   outputStream.pipe(res);
 
   res.writeHead(200, {
@@ -22,8 +23,11 @@ const onSuccess = (outputStream, res) => {
 };
 
 const onError = (errorChunk, res) => {
-  res.status(500).json({ error: true });
-  res.write(
+  // res.status(500).json({ error: true });
+  console.log("ON ERROR HERE TEST!");
+  res.status(500).json("Error While Processing your Source");
+  res.write("Error While Processing your Source");
+  console.log(
     errorChunk
       .split("\n")
       .map((line) => "[Error] " + line)

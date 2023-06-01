@@ -22,7 +22,7 @@ function executeCmd(isPythonScript, args, basename, onSucess, onError, res) {
 
   cmd.stderr.on("data", (chunk) => {
     const chunkStr = chunk.toString("utf-8");
-    console.error("[Error]", chunkStr);
+    console.error("[Error lalal]", chunkStr);
     onError(chunkStr, res);
   });
 

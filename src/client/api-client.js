@@ -3,7 +3,7 @@ export function extractVideoIdFromLink(url) {
   return new URL(url).searchParams.get("v");
 }
 
-export async function processSource(source, resultType, resultLanguage, email) {
+export async function processSource(source, resultType, resultLanguage) {
   let transcription = "";
 
   if (typeof source === "string") {
@@ -22,16 +22,19 @@ export async function processSource(source, resultType, resultLanguage, email) {
         transcription,
         resultLanguage
       );
-      return translatedTranscription;
+
+      if (translatedTranscription) {
+        return translatedTranscription;
+      }
+
+      return "There was an error while processing your source. Please try again at a later time";
     } else {
       // if no translation requested, return the transcription
-
       return transcription;
     }
   }
 
-  // if no transcription, return false
-  return false;
+  return "There was an error while processing your source. Please try again at a later time";
 }
 
 export async function downloadAudioFromVideo(videoId) {
@@ -42,12 +45,14 @@ export async function downloadAudioFromVideo(videoId) {
     })}`
   );
 
-  // result from the api (the body)
-  const reader = res.body?.getReader();
+  if (res.ok) {
+    const reader = res.body?.getReader();
 
-  if (reader) {
-    return streamedResponse(reader);
+    if (reader) {
+      return streamedResponse(reader);
+    }
   }
+  return false;
 }
 
 export async function uploadAudio(source) {
@@ -56,13 +61,14 @@ export async function uploadAudio(source) {
     body: source,
   });
 
-  const reader = res.body?.getReader();
+  if (res.ok) {
+    const reader = res.body?.getReader();
 
-  if (reader) {
-    return streamedResponse(reader);
-  } else {
-    return false;
+    if (reader) {
+      return streamedResponse(reader);
+    }
   }
+  return false;
 }
 
 export async function transcribeAudioFromVideo(source, resultType) {
@@ -74,13 +80,14 @@ export async function transcribeAudioFromVideo(source, resultType) {
     {}
   );
 
-  const reader = res.body?.getReader();
+  if (res.ok) {
+    const reader = res.body?.getReader();
 
-  if (reader) {
-    return streamedResponse(reader);
-  } else {
-    return false;
+    if (reader) {
+      return streamedResponse(reader);
+    }
   }
+  return false;
 }
 
 export async function transcribeAudioFromAudio(source, resultType) {
@@ -91,13 +98,14 @@ export async function transcribeAudioFromAudio(source, resultType) {
     body: source,
   });
 
-  const reader = res.body?.getReader();
+  if (res.ok) {
+    const reader = res.body?.getReader();
 
-  if (reader) {
-    return streamedResponse(reader);
-  } else {
-    return false;
+    if (reader) {
+      return streamedResponse(reader);
+    }
   }
+  return false;
 }
 
 export async function translate(transcription, resultLanguage) {
@@ -111,13 +119,14 @@ export async function translate(transcription, resultLanguage) {
     body: JSON.stringify(data),
   });
 
-  const reader = res.body?.getReader();
+  if (res.ok) {
+    const reader = res.body?.getReader();
 
-  if (reader) {
-    return streamedResponse(reader);
-  } else {
-    return false;
+    if (reader) {
+      return streamedResponse(reader);
+    }
   }
+  return false;
 }
 
 // function that get the object reader and read/decode it in chunks

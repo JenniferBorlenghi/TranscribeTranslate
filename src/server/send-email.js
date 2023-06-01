@@ -13,7 +13,7 @@ function sendEmail(email, output, onSuccessSendEmail, onErrorSendEmail) {
 
   let transporter = nodemailer.createTransport(config);
 
-  let messageContent = `<p>Dear user,</p><br><p>Your source has been processed, and the result is now available. Please find the attached file for the details.</p><br><p><b>Result:</b> ${output}</p><br><p>Best Regards,</p><p>Tt Transcription and Translate Team</p>`;
+  let messageContent = `<p>Dear user,</p><br><p>Your source has been processed, and the result is now available. Please find the attached file for the details.</p><br><p><b>Result:</b> ${output}</p><br><p>Best Regards,</p><p>Tt Transcription & Translate Team</p>`;
 
   fs.writeFile("result.txt", output, (err) => {
     if (err) {

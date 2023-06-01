@@ -153,6 +153,7 @@ export default function Form({ onStepChange, onProcessDone }) {
                 type="file"
                 accept="audio/*"
                 onChange={(e) => setSource(e.target.files[0])}
+                id="audio-file"
               />
             </label>
           </div>
@@ -168,6 +169,7 @@ export default function Form({ onStepChange, onProcessDone }) {
                 placeholder="Enter the YouTube URL"
                 value={source}
                 onChange={(e) => setSource(e.target.value)}
+                id="youtube-url"
               />
             </label>
           </div>
@@ -228,7 +230,7 @@ export default function Form({ onStepChange, onProcessDone }) {
           </label>
         </div>
 
-        <button>Start Processing</button>
+        <button id="submit-form">Start Processing</button>
       </form>
     </div>
   );
