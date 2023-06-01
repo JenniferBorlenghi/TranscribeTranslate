@@ -26,8 +26,6 @@ export async function processSource(source, resultType, resultLanguage) {
       if (translatedTranscription) {
         return translatedTranscription;
       }
-
-      return "There was an error while processing your source. Please try again at a later time";
     } else {
       // if no translation requested, return the transcription
       return transcription;
