@@ -13,7 +13,6 @@ export default function MainContent() {
 
   const handleProcessDone = (output) => {
     setResult(output);
-    console.log("the output", output);
   };
   return (
     <div className="main-content">

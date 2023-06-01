@@ -1,12 +1,12 @@
-Hello
-Hello
-Hey
-Hey
-Kumusta, po.
-Magandang umaga
-Magandang umaga
-Ano ang kinalabasan? Hey, kamusta ka? Hey, kamusta ka? Hi
-Kumusta
-Kumusta
-Magandang umaga
-Anong kabagalan? Hey, kamusta ka?
+こんにちは
+こんにちは
+こんにちは。
+こんにちは。
+お、こんにちは
+おはようございます。
+おはようございます。
+こんにちは。お元気ですか？お元気ですか？こんにちは。
+こんにちは。
+こんにちは。
+おはようございます。
+お元気ですか？ねえ、お元気ですか？
