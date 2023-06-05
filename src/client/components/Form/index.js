@@ -26,10 +26,11 @@ export default function Form({ onStepChange, onProcessDone }) {
       sourceType === "" ||
       source === "" ||
       resultType === "" ||
-      resultLanguage === "" ||
-      email === ""
+      resultLanguage === ""
+      // ||
+      // email === ""
     ) {
-      arrayOfErrorMessages.push("All fields are required.");
+      arrayOfErrorMessages.push("All fields, except the email, are required.");
     }
 
     // verifying if the youtube link provided is valid
@@ -62,7 +63,9 @@ export default function Form({ onStepChange, onProcessDone }) {
         if (videoTranscription) {
           onProcessDone(videoTranscription);
           onStepChange("Output");
-          sendEmail(email, videoTranscription);
+          if (email !== "") {
+            sendEmail(email, videoTranscription);
+          }
         }
       } else {
         const formData = new FormData();
@@ -78,7 +81,9 @@ export default function Form({ onStepChange, onProcessDone }) {
         if (audioTranscription) {
           onProcessDone(audioTranscription);
           onStepChange("Output");
-          sendEmail(email, audioTranscription);
+          if (email !== "") {
+            sendEmail(email, audioTranscription);
+          }
         }
       }
 

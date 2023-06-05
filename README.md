@@ -1,4 +1,6 @@
-# Getting Started with Create React App
+# Transcription and Translate your Media!
+
+This application allows that you transcribe and or translate audio and videos from youtube.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

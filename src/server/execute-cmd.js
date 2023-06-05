@@ -2,13 +2,15 @@ const fs = require("fs");
 const path = require("path");
 const { spawn } = require("child_process");
 
-function executeCmd(isPythonScript, args, basename, onSucess, onError, res) {
+function executeCmd(isPythonScript, args, basename, onCmdOk, onCmdError) {
   const scriptPath = path.join(process.cwd(), basename);
 
   // giving permissions to execute the command to this path
   fs.chmodSync(scriptPath, "755");
 
-  let cmd = "";
+  let cmd = false;
+  let errorMessage = "";
+  let result = "";
 
   if (isPythonScript) {
     cmd = spawn("python3", [scriptPath, ...args]);
@@ -17,16 +19,23 @@ function executeCmd(isPythonScript, args, basename, onSucess, onError, res) {
   }
 
   cmd.on("close", (code) => {
-    console.log("Finished command. Exit code:", code);
+    // console.log("Finished command. Exit code:", code);
+    // console.log("@@@@ errorMessage", errorMessage);
+    // console.log("@@@ resut", result);
+    if (errorMessage) {
+      onCmdError(errorMessage);
+      return;
+    }
+    onCmdOk(result);
+  });
+
+  cmd.stdout.on("data", (data) => {
+    result += data;
   });
 
   cmd.stderr.on("data", (chunk) => {
-    const chunkStr = chunk.toString("utf-8");
-    console.error("[Error lalal]", chunkStr);
-    onError(chunkStr, res);
+    errorMessage += chunk;
   });
-
-  onSucess(cmd.stdout, res);
 }
 
 module.exports = { executeCmd };

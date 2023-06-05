@@ -14,6 +14,8 @@ export async function processSource(source, resultType, resultLanguage) {
     transcription = await transcribeAudioFromAudio(source, resultType);
   }
 
+  // console.log("transcription", transcription);
+
   // if it was possible to get the transcription of the audio"
   if (transcription) {
     // if translation is requested, then translate
@@ -90,6 +92,7 @@ export async function transcribeAudioFromVideo(source, resultType) {
 
 export async function transcribeAudioFromAudio(source, resultType) {
   source.append("resultType", resultType);
+  // console.log("source test", source);
 
   const res = await fetch("/api/transcript/audio", {
     method: "POST",
@@ -98,8 +101,9 @@ export async function transcribeAudioFromAudio(source, resultType) {
 
   if (res.ok) {
     const reader = res.body?.getReader();
-
+    // console.log("res is ok", res.body);
     if (reader) {
+      // console.log("has reader");
       return streamedResponse(reader);
     }
   }
@@ -142,7 +146,7 @@ async function streamedResponse(reader) {
 
       const output = decoder.decode(value);
       result += output;
-
+      // console.log("result", result);
       reader.read().then(readChunk);
     };
 
@@ -161,7 +165,6 @@ export async function sendEmail(email, output) {
       },
       body: JSON.stringify(data),
     });
-
     if (res.ok) {
       console.log("Email sent successfully");
     } else {

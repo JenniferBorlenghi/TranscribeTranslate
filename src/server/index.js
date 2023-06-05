@@ -10,26 +10,27 @@ const port = 3000;
 app.use(express.json());
 app.use(fileUpload());
 
-const onSuccess = (outputStream, res) => {
-  outputStream.pipe(res);
+const onSuccess = (result, res) => {
+  // console.log("@@@ onSuccess", result);
 
-  res.writeHead(200, {
-    "Content-Type": "text/plain",
-    "Cache-Control": "no-cache",
-    "Content-Encoding": "none",
-    "Access-Control-Allow-Origin": "*",
-  });
+  // if the headers of the response is not sent:
+  if (!res.headersSent) {
+    // Setting up headers
+    res.setHeader("Content-Type", "text/plain");
+    res.setHeader("Cache-Control", "no-cache");
+    // decoding is not necessary, the response body will be the final response
+    res.setHeader("Content-Encoding", "none");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  }
+
+  // send the HTTP response with the result type text and the headers
+  // already set up above (if headers not sent)
+  res.send(result);
 };
 
 const onError = (errorChunk, res) => {
-  res.status(500).json("Error While Processing your Source");
-  res.write("Error While Processing your Source");
-  console.log(
-    errorChunk
-      .split("\n")
-      .map((line) => "[Error] " + line)
-      .join("\n")
-  );
+  console.log("@@@ onError");
+  return res.status(500).json({ error: true });
 };
 
 app.get("/api/download/youtube/audio", (req, res) => {
@@ -44,7 +45,14 @@ app.get("/api/download/youtube/audio", (req, res) => {
   const args = [video_id];
   const basename = "/src/server/scripts/youtube-download-audio.sh";
 
-  executeCmd(isPythonScript, args, basename, onSuccess, onError, res);
+  const onCmdError = (error) => {
+    onError(error, res);
+  };
+  const onCmdOk = (result) => {
+    onSuccess(result, res);
+  };
+
+  executeCmd(isPythonScript, args, basename, onCmdOk, onCmdError);
 });
 
 app.post("/api/upload/audio", (req, res) => {
@@ -72,7 +80,14 @@ app.get("/api/transcript/youtube", (req, res) => {
   const args = [source, resultType, "youtube"];
   const basename = "/src/server/scripts/transcribe.py";
 
-  executeCmd(isPythonScript, args, basename, onSuccess, onError, res);
+  const onCmdError = (cmd) => {
+    onError(cmd, res);
+  };
+  const onCmdOk = (cmd) => {
+    onSuccess(cmd, res);
+  };
+
+  executeCmd(isPythonScript, args, basename, onCmdOk, onCmdError);
 });
 
 app.post("/api/transcript/audio", (req, res) => {
@@ -82,12 +97,21 @@ app.post("/api/transcript/audio", (req, res) => {
 
   const isPythonScript = true;
   const fileName = req.files.audio.name;
+  console.log("filename", fileName);
   const resultType = req.body.resultType;
+  console.log("result type", resultType);
   const args = [fileName, resultType, "audio"];
 
   const basename = "/src/server/scripts/transcribe.py";
 
-  executeCmd(isPythonScript, args, basename, onSuccess, onError, res);
+  const onCmdError = (cmd) => {
+    onError(cmd, res);
+  };
+  const onCmdOk = (cmd) => {
+    onSuccess(cmd, res);
+  };
+
+  executeCmd(isPythonScript, args, basename, onCmdOk, onCmdError);
 });
 
 app.post("/api/translate", (req, res) => {
@@ -96,7 +120,14 @@ app.post("/api/translate", (req, res) => {
   const args = [transcription, resultLanguage];
   const basename = "/src/server/scripts/translate.py";
 
-  executeCmd(isPythonScript, args, basename, onSuccess, onError, res);
+  const onCmdError = (cmd) => {
+    onError(cmd, res);
+  };
+  const onCmdOk = (cmd) => {
+    onSuccess(cmd, res);
+  };
+
+  executeCmd(isPythonScript, args, basename, onCmdOk, onCmdError);
 });
 
 app.post("/api/send/email", async (req, res) => {
