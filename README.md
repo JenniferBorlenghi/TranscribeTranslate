@@ -1,6 +1,6 @@
 # Transcription and Translate your Media!
 
-Tool to transcribe and/or translate videos from youtube and audios. You are able to download the result as a txt file. The field email is not required, but if you fill it out, it will send the result by email when the processment if finished. 
+Tool to transcribe and/or translate videos from youtube and audio. You can download the result as a text file. The field email is not required, but if you fill it out, it will send the result by email when the processing is finished.
 
 ![screenshot](./readme-files/ui.png)
 
@@ -8,7 +8,7 @@ Tool to transcribe and/or translate videos from youtube and audios. You are able
 
 - React: to build the frontend components
 - Node.js and Express: to handle the backend
-- yt-dlp: to download an audio from a youtube video
+- yt-dlp: to download audio from a youtube video
 - openai: to transcript and transcribe the media
 - Python3 and pip3: to run the scripts from the openai
 - SASS and React Icons: to handle the style of the UI
