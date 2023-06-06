@@ -3,7 +3,12 @@
 .form-comp {
   display: flex;
   flex-direction: column;
-  margin: 40px 100px;
+  margin: 30px 100px;
+
+  h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
 
   .form-validate {
     color: $danger-color;
@@ -32,7 +37,7 @@
   form {
     display: flex;
     flex-direction: column;
-    padding: 30px;
+    padding: 25px 30px;
     border: 1px solid $border-color;
     border-radius: 8px;
 
