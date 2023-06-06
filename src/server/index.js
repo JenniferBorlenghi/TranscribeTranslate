@@ -17,6 +17,7 @@ const onSuccess = (result, res) => {
   if (!res.headersSent) {
     // Setting up headers
     res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Content-Type", "application/json");
     res.setHeader("Access-Control-Allow-Origin", "*");
   }
 
