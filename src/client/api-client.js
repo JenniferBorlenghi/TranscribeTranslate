@@ -17,7 +17,7 @@ export async function processSource(source, resultType, resultLanguage) {
   // console.log("transcription", transcription);
 
   // if it was possible to get the transcription of the audio"
-  if (transcription) {
+  if (!transcription.error) {
     // if translation is requested, then translate
     if (resultLanguage !== "no translation") {
       const translatedTranscription = await translate(
@@ -34,7 +34,7 @@ export async function processSource(source, resultType, resultLanguage) {
     }
   }
 
-  return "There was an error while processing your source. Please try again at a later time";
+  return "An error occurred while processing your request. Please review the input you provided and try again.";
 }
 
 export async function downloadAudioFromVideo(videoId) {
@@ -45,14 +45,9 @@ export async function downloadAudioFromVideo(videoId) {
     })}`
   );
 
-  if (res.ok) {
-    const reader = res.body?.getReader();
-
-    if (reader) {
-      return streamedResponse(reader);
-    }
+  if (!res.ok) {
+    return false;
   }
-  return false;
 }
 
 export async function uploadAudio(source) {
@@ -61,14 +56,9 @@ export async function uploadAudio(source) {
     body: source,
   });
 
-  if (res.ok) {
-    const reader = res.body?.getReader();
-
-    if (reader) {
-      return streamedResponse(reader);
-    }
+  if (!res.ok) {
+    return false;
   }
-  return false;
 }
 
 export async function transcribeAudioFromVideo(source, resultType) {
@@ -79,20 +69,15 @@ export async function transcribeAudioFromVideo(source, resultType) {
     })}`,
     {}
   );
+  const transcribedAudio = await res.json();
 
   if (res.ok) {
-    const reader = res.body?.getReader();
-    console.log("reader", JSON.stringify(res.body));
-    // const test = JSON.stringify(res.body);
-    // return test;
-    if (reader) {
-      return streamedResponse(reader);
-      // const decoder = new TextDecoder();
-      // const result = decoder.decode(reader);
-      // return result;
-    }
+    console.log("Transcribed Audio: ", transcribedAudio.result);
+    const result = transcribedAudio.result;
+
+    return result;
   }
-  return false;
+  return transcribedAudio;
 }
 
 export async function transcribeAudioFromAudio(source, resultType) {
@@ -104,15 +89,15 @@ export async function transcribeAudioFromAudio(source, resultType) {
     body: source,
   });
 
+  const transcribedAudio = await res.json();
+
   if (res.ok) {
-    const reader = res.body?.getReader();
-    // console.log("res is ok", res.body);
-    if (reader) {
-      // console.log("has reader");
-      return streamedResponse(reader);
-    }
+    console.log("Transcribed Audio: ", transcribedAudio.result);
+    const result = transcribedAudio.result;
+
+    return result;
   }
-  return false;
+  return transcribedAudio;
 }
 
 export async function translate(transcription, resultLanguage) {
@@ -126,56 +111,30 @@ export async function translate(transcription, resultLanguage) {
     body: JSON.stringify(data),
   });
 
+  const translatedTranscription = await res.json();
+
   if (res.ok) {
-    const reader = res.body?.getReader();
+    const result = translatedTranscription.result;
+    console.log("Translated Transcription:", translatedTranscription.result);
 
-    if (reader) {
-      return streamedResponse(reader);
-    }
+    return result;
   }
-  return false;
-}
-
-// function that get the object reader and read/decode it in chunks
-// to display in the web page
-async function streamedResponse(reader) {
-  return await new Promise((resolve) => {
-    const decoder = new TextDecoder();
-    let result = "";
-
-    const readChunk = ({ done, value }) => {
-      if (done) {
-        resolve(result);
-        return;
-      }
-
-      const output = decoder.decode(value);
-      result += output;
-      console.log("result", result);
-      reader.read().then(readChunk);
-    };
-
-    reader.read().then(readChunk);
-  });
+  return translatedTranscription;
 }
 
 export async function sendEmail(email, output) {
   const data = { email, output };
 
-  try {
-    const res = await fetch("/api/send/email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    if (res.ok) {
-      console.log("Email sent successfully");
-    } else {
-      console.log("Error sending email", res);
-    }
-  } catch (error) {
-    console.log("Error sending email: ", error);
+  const res = await fetch("/api/send/email", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    console.log("Error sending email");
+    return false;
   }
 }

@@ -48,15 +48,9 @@ function sendEmail(email, output, onSuccessSendEmail, onErrorSendEmail) {
     .sendMail(message)
     .then((info) => {
       onSuccessSendEmail({ info, preview: nodemailer.getTestMessageUrl(info) });
-      // return res.status(201).json({
-      //   msg: "you should receive an email",
-      //   info: info.messageId,
-      //   preview: nodemailer.getTestMessageUrl(info),
-      // });
     })
     .catch((error) => {
       onErrorSendEmail(error);
-      // return res.status(500).json({ error });
     });
 }
 

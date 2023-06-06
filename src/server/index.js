@@ -17,20 +17,17 @@ const onSuccess = (result, res) => {
   if (!res.headersSent) {
     // Setting up headers
     res.setHeader("Cache-Control", "no-cache");
-    // decoding is not necessary, the response body will be the final response
-    res.setHeader("Content-Encoding", "none");
     res.setHeader("Access-Control-Allow-Origin", "*");
   }
-  console.log("result from back", result);
 
-  // send the HTTP response with the result type text and the headers
-  // already set up above (if headers not sent)
-  res.send(result);
+  console.log("RESPONSE TO SEND", result);
+  // res.send(result);
+  return res.status(200).json({ result: result, error: false });
 };
 
 const onError = (errorMessage, res) => {
   console.log("onError", errorMessage);
-  return res.status(500).json({ error: errorMessage });
+  return res.status(500).json({ result: false, error: errorMessage });
 };
 
 app.get("/api/download/youtube/audio", (req, res) => {
@@ -68,9 +65,13 @@ app.post("/api/upload/audio", (req, res) => {
   audioFile.mv(filePath, (err) => {
     if (err) {
       console.error("Error to save the file: ", err);
-      return res.status(500).send("Error to save the file");
+      return res
+        .status(500)
+        .send({ result: "File could not be uploaded.", error: err });
     }
-    res.send("File uploaded successfully.");
+    res
+      .status(200)
+      .json({ result: "File uploaded successfully.", error: false });
   });
 });
 
