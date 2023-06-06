@@ -82,9 +82,14 @@ export async function transcribeAudioFromVideo(source, resultType) {
 
   if (res.ok) {
     const reader = res.body?.getReader();
-
+    console.log("reader", JSON.stringify(res.body));
+    // const test = JSON.stringify(res.body);
+    // return test;
     if (reader) {
       return streamedResponse(reader);
+      // const decoder = new TextDecoder();
+      // const result = decoder.decode(reader);
+      // return result;
     }
   }
   return false;
@@ -146,7 +151,7 @@ async function streamedResponse(reader) {
 
       const output = decoder.decode(value);
       result += output;
-      // console.log("result", result);
+      console.log("result", result);
       reader.read().then(readChunk);
     };
 
@@ -171,6 +176,6 @@ export async function sendEmail(email, output) {
       console.log("Error sending email", res);
     }
   } catch (error) {
-    console.log("Error sending meail: ", error);
+    console.log("Error sending email: ", error);
   }
 }

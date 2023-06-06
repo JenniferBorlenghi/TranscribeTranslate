@@ -11,26 +11,26 @@ app.use(express.json());
 app.use(fileUpload());
 
 const onSuccess = (result, res) => {
-  // console.log("@@@ onSuccess", result);
+  // console.log("onSuccess", result);
 
   // if the headers of the response is not sent:
   if (!res.headersSent) {
     // Setting up headers
-    res.setHeader("Content-Type", "text/plain");
     res.setHeader("Cache-Control", "no-cache");
     // decoding is not necessary, the response body will be the final response
     res.setHeader("Content-Encoding", "none");
     res.setHeader("Access-Control-Allow-Origin", "*");
   }
+  console.log("result from back", result);
 
   // send the HTTP response with the result type text and the headers
   // already set up above (if headers not sent)
   res.send(result);
 };
 
-const onError = (errorChunk, res) => {
-  console.log("@@@ onError");
-  return res.status(500).json({ error: true });
+const onError = (errorMessage, res) => {
+  console.log("onError", errorMessage);
+  return res.status(500).json({ error: errorMessage });
 };
 
 app.get("/api/download/youtube/audio", (req, res) => {
