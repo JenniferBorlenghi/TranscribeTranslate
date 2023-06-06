@@ -108,6 +108,7 @@ export default function Form({ onStepChange, onProcessDone }) {
     } else if (sourceFormat === "youtube") {
       setIsAudioSource(false);
       setIsYoutubeSource(true);
+      setSource("");
     }
   };
 

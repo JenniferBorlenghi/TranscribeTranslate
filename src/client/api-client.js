@@ -57,6 +57,7 @@ export async function uploadAudio(source) {
   });
 
   if (!res.ok) {
+    console.log("hereeeee agora!s");
     return false;
   }
 }
@@ -76,8 +77,10 @@ export async function transcribeAudioFromVideo(source, resultType) {
     const result = transcribedAudio.result;
 
     return result;
+  } else {
+    console.log("deu ruim");
+    return transcribedAudio;
   }
-  return transcribedAudio;
 }
 
 export async function transcribeAudioFromAudio(source, resultType) {
