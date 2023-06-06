@@ -8,7 +8,8 @@ Tool to transcribe and/or translate videos from youtube and audio. You can downl
 
 - React: to build the frontend components
 - Node.js and Express: to handle the backend
-- yt-dlp: to download audio from a youtube video
+- yt-dlp: to download audio from a youtube video 
+- express-fileupload: express middleware to upload files
 - openai: to transcript and transcribe the media
 - Python3 and pip3: to run the scripts from the openai
 - SASS and React Icons: to handle the style of the UI

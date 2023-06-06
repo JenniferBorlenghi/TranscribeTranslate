@@ -57,7 +57,6 @@ export async function uploadAudio(source) {
   });
 
   if (!res.ok) {
-    console.log("hereeeee agora!s");
     return false;
   }
 }
@@ -73,12 +72,11 @@ export async function transcribeAudioFromVideo(source, resultType) {
   const transcribedAudio = await res.json();
 
   if (res.ok) {
-    console.log("Transcribed Audio: ", transcribedAudio.result);
+    // console.log("Transcribed Audio: ", transcribedAudio.result);
     const result = transcribedAudio.result;
 
     return result;
   } else {
-    console.log("deu ruim");
     return transcribedAudio;
   }
 }
@@ -95,7 +93,7 @@ export async function transcribeAudioFromAudio(source, resultType) {
   const transcribedAudio = await res.json();
 
   if (res.ok) {
-    console.log("Transcribed Audio: ", transcribedAudio.result);
+    // console.log("Transcribed Audio: ", transcribedAudio.result);
     const result = transcribedAudio.result;
 
     return result;
@@ -137,7 +135,7 @@ export async function sendEmail(email, output) {
   });
 
   if (!res.ok) {
-    console.log("Error sending email");
+    // console.log("Error sending email");
     return false;
   }
 }

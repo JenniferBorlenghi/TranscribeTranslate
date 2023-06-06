@@ -21,8 +21,6 @@ const onSuccess = (result, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
   }
 
-  console.log("RESPONSE TO SEND", result);
-  // res.send(result);
   return res.status(200).json({ result: result, error: false });
 };
 
@@ -99,9 +97,9 @@ app.post("/api/transcript/audio", (req, res) => {
 
   const isPythonScript = true;
   const fileName = req.files.audio.name;
-  console.log("filename", fileName);
+  // console.log("filename", fileName);
   const resultType = req.body.resultType;
-  console.log("result type", resultType);
+  // console.log("result type", resultType);
   const args = [fileName, resultType, "audio"];
 
   const basename = "/src/server/scripts/transcribe.py";
