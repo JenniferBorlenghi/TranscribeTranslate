@@ -3,10 +3,18 @@
 .form-comp {
   display: flex;
   flex-direction: column;
-  margin: 30px 100px;
+  margin: 30px 80px;
+
+  @include breakpoint-small {
+    margin: 30px 110px;
+  }
+
+  @include breakpoint-medium {
+    margin: 30px 200px;
+  }
 
   h2 {
-    font-size: 24px;
+    font-size: 26px;
     margin-bottom: 10px;
   }
 
@@ -51,7 +59,7 @@
     select {
       box-sizing: border-box;
       width: 100%;
-      font-size: 1rem;
+      font-size: 16px;
       padding: 10px;
       color: $secondary-color;
       border: solid 1px $border-color;

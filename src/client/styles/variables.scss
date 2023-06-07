@@ -29,3 +29,21 @@ $text-size: 16px;
     background-color: $secondary-color;
   }
 }
+
+@mixin breakpoint($min-width) {
+  @media only screen and (min-width: $min-width) {
+    @content;
+  }
+}
+
+@mixin breakpoint-small {
+  @include breakpoint(600px) {
+    @content;
+  }
+}
+
+@mixin breakpoint-medium {
+  @include breakpoint(900px) {
+    @content;
+  }
+}
