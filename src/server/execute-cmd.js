@@ -19,9 +19,6 @@ function executeCmd(isPythonScript, args, basename, onCmdOk, onCmdError) {
   }
 
   cmd.on("close", (code) => {
-    // console.log("Finished command. Exit code:", code);
-    // console.log("errorMessage", errorMessage);
-    // console.log("resut", result);
     if (errorMessage) {
       onCmdError(errorMessage);
       return;

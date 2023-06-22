@@ -11,8 +11,6 @@ app.use(express.json());
 app.use(fileUpload());
 
 const onSuccess = (result, res) => {
-  // console.log("onSuccess", result);
-
   // if the headers of the response is not sent:
   if (!res.headersSent) {
     // Setting up headers
@@ -97,9 +95,9 @@ app.post("/api/transcript/audio", (req, res) => {
 
   const isPythonScript = true;
   const fileName = req.files.audio.name;
-  // console.log("filename", fileName);
+
   const resultType = req.body.resultType;
-  // console.log("result type", resultType);
+
   const args = [fileName, resultType, "audio"];
 
   const basename = "/src/server/scripts/transcribe.py";
