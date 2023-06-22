@@ -45,7 +45,7 @@ npm i
 npm run dev
 ```
 
-8. Start the server:
+8. Start the server (port 3000):
 
 ```bash
     npm run devStart
