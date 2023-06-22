@@ -1,13 +1,12 @@
 const nodemailer = require("nodemailer");
-const { EMAIL, PASSWORD } = require("../../env");
 const fs = require("fs");
 
 function sendEmail(email, output, onSuccessSendEmail, onErrorSendEmail) {
   let config = {
     service: "gmail",
     auth: {
-      user: EMAIL,
-      pass: PASSWORD,
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
     },
   };
 
@@ -31,7 +30,7 @@ function sendEmail(email, output, onSuccessSendEmail, onErrorSendEmail) {
   });
 
   let message = {
-    from: EMAIL,
+    from: process.env.EMAIL,
     to: email,
     subject: "Your transcript/translate is done!",
     text: output,
