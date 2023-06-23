@@ -18,7 +18,7 @@ Tool to transcribe and/or translate videos from youtube and audio. You can downl
 - express-fileupload: express middleware to upload files
 - openai: to transcript and transcribe the media
 - Python3 and pip3: to run the scripts from the openai
-- SASS and React Icons: to handle the style of the UI
+- SCSS and React Icons: to handle the style of the UI
 - Playwright: to test and ensure the app is running
 
 ## How to use
