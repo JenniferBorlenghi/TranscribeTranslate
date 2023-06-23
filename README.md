@@ -23,32 +23,27 @@ Tool to transcribe and/or translate videos from youtube and audio. You can downl
 
 ## How to use
 
-1. Get your OpenAI API Key(https://platform.openai.com/account/api-keys)
-2. Set an environment variable `$OPENAI_API_KEY`
+1. Create a .env file in the root directory
+   
+2. Get your OpenAI API Key (https://platform.openai.com/account/api-keys)
 
-```bash
-export OPENAI_API_KEY="your key"
-```
+3. On your Google account > security: unable 2-Step Verification
 
-3. Create a .env file in the root directory
-
-4. On your Google account > security: unable 2-Step Verification
-
-5. On your Google account > security: create an app password
+4. On your Google account > security: create an app password and get the app password
 
 6. On your .env file, define:
 
 ```bash
 EMAIL = "your gmail account"
 PASSWORD =  "app password"
+OPENAI_API_KEY="your key"
 ```
 
-7. Run the following commands:
+7. Install packages of the application (make sure you have python3 and pip3 installed on your machine):
 
 ```bash
 pip3 install -r requirements.txt
 npm i
-npm run dev
 ```
 
 8. Start the server (port 3000):
