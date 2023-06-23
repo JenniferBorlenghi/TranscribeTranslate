@@ -2,11 +2,11 @@
 
 Tool to transcribe and/or translate videos from youtube and audio. You can download the result as a text file. The field email is not required, but if you fill it out, it will send the result by email when the processing is finished.
 
-### Youtube Source Example
+#### Youtube Source Example
 
 ![Alt Text](./readme-files/youtube-example.gif)
 
-### Audio Source Exampleaudio
+#### Audio Source Example
 
 ![Alt Text](./readme-files/audio-example.gif)
 
