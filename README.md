@@ -2,7 +2,7 @@
 
 Tool to transcribe and/or translate videos from youtube and audio. You can download the result as a text file. The field email is not required, but if you fill it out, it will send the result by email when the processing is finished.
 
-![Alt Text](./readme-files/youtube-transcribe-translate.gif)
+![Alt Text](./readme-files/youtube-example.gif)
 
 ## What did I use to build this application?
 
