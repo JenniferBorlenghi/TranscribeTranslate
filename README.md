@@ -34,16 +34,16 @@ Tool to transcribe and/or translate videos from youtube and audio. You can downl
 6. On your .env file, define:
 
 ```bash
-EMAIL = "your gmail account"
-PASSWORD =  "app password"
-OPENAI_API_KEY="your key"
+   EMAIL = "your gmail account"
+   PASSWORD =  "app password"
+   OPENAI_API_KEY="your key"
 ```
 
 7. Install packages of the application (make sure you have python3 and pip3 installed on your machine):
 
 ```bash
-pip3 install -r requirements.txt
-npm i
+   pip3 install -r requirements.txt
+   npm i
 ```
 
 8. Start the server (port 3000):
