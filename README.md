@@ -66,7 +66,7 @@ PROJECT_ROOT
 ├── src
 │   └── client
 │       └── components          # React components
-│       └── styles              # SASS styles
+│       └── styles              # SCSS styles
 │       └── api-client.js       # API routes
 │       └── App.js
 │    └── server
