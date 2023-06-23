@@ -3,6 +3,7 @@ const path = require("path");
 const { executeCmd } = require("./execute-cmd");
 const fileUpload = require("express-fileupload");
 const { sendEmail } = require("./send-email");
+require("dotenv").config();
 
 const app = express();
 const port = 3000;
